@@ -1,6 +1,7 @@
 package Model
 
 import (
+	"card-service/Utilities"
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,6 +16,7 @@ type UserFlashCard struct {
 	Answers  []string           `bson:"answers"`
 	Media    []string           `bson:"media"`
 	Lang     []string           `bson:"languages"`
+	Topics   []string           `bson:"topics"`
 }
 
 const FlashCardCollectionName = "UserFlashCard"
@@ -37,9 +39,9 @@ func InsertOneFlashCard(ctx context.Context, db *mongo.Database, card UserFlashC
 	return nil
 }
 
-func InsertMany(ctx context.Context, db *mongo.Database, cards []UserFlashCard) error {
+func InsertManyFlashCards(ctx context.Context, db *mongo.Database, cards []UserFlashCard) error {
 	collection := db.Collection(FlashCardCollectionName)
-	cardInterface := ToInterfaceSlice(cards)
+	cardInterface := Utilities.ToInterfaceSlice(cards)
 	_, err := collection.InsertMany(ctx, cardInterface)
 	if err != nil {
 		log.Fatal("Couldn't insert one flashcard")

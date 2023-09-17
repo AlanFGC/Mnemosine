@@ -2,6 +2,7 @@ package main
 
 import (
 	"card-service/Model"
+	"card-service/Utilities"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -32,6 +33,25 @@ func main() {
 		fmt.Print("FAILED TO INSERT")
 		return
 	}
+	var size int
+	size = 10
+	cards := make([]Model.UserFlashCard, size)
+	for i := 0; i < size; i++ {
+		cards[i] = Model.UserFlashCard{
+			Username: Utilities.GenerateRandString(5),
+			Title:    Utilities.GenerateRandString(5),
+			Text:     Utilities.GenerateRandString(5),
+			Answers:  []string{Utilities.GenerateRandString(5), Utilities.GenerateRandString(5)},
+			Media:    []string{Utilities.GenerateRandString(5), Utilities.GenerateRandString(5)},
+			Lang:     []string{Utilities.GenerateRandString(5)},
+		}
+	}
+
+	err = Model.InsertManyFlashCards(ctx, db, cards)
+	if err != nil {
+		fmt.Print("FAILED TO INSERT MANY")
+	}
+
 	//db.Drop(ctx)
 	disconnectDB(context.TODO(), client)
 }
