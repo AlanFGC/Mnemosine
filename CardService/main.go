@@ -18,9 +18,21 @@ func main() {
 		return
 	}
 	db := client.Database("mnemosine")
-	Model.CreateCardCollection(ctx, db)
-
-	db.Drop(ctx)
+	//Model.CreateCardCollection(ctx, db)
+	card := Model.UserFlashCard{
+		Username: "Alan",
+		Title:    "Sample Card",
+		Text:     "This is a sample flash card.",
+		Answers:  []string{"Answer 1", "Answer 2"},
+		Media:    []string{"image.jpg", "audio.mp3"},
+		Lang:     []string{"English", "Spanish"},
+	}
+	err = Model.InsertOneFlashCard(ctx, db, card)
+	if err != nil {
+		fmt.Print("FAILED TO INSERT")
+		return
+	}
+	//db.Drop(ctx)
 	disconnectDB(context.TODO(), client)
 }
 

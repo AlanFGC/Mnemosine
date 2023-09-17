@@ -4,7 +4,6 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 )
 
@@ -18,13 +17,32 @@ type UserFlashCard struct {
 	Lang     []string           `bson:"languages"`
 }
 
+const FlashCardCollectionName = "UserFlashCard"
+
 func CreateCardCollection(ctx context.Context, db *mongo.Database) error {
-	collectionOptions := options.CreateCollection()
-	err := db.CreateCollection(ctx, "UserFlashCard", collectionOptions)
+	err := db.CreateCollection(ctx, FlashCardCollectionName)
 	if err != nil {
 		log.Fatal("Something went wrong", err)
 		return err
 	}
+	return nil
+}
 
+func InsertOneFlashCard(ctx context.Context, db *mongo.Database, card UserFlashCard) error {
+	collection := db.Collection(FlashCardCollectionName)
+	_, err := collection.InsertOne(ctx, card)
+	if err != nil {
+		log.Fatal("Couldn't insert one flashcard")
+	}
+	return nil
+}
+
+func InsertMany(ctx context.Context, db *mongo.Database, cards []UserFlashCard) error {
+	collection := db.Collection(FlashCardCollectionName)
+	cardInterface := ToInterfaceSlice(cards)
+	_, err := collection.InsertMany(ctx, cardInterface)
+	if err != nil {
+		log.Fatal("Couldn't insert one flashcard")
+	}
 	return nil
 }
