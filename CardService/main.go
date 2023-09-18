@@ -24,9 +24,16 @@ func main() {
 		Username: "Alan",
 		Title:    "Sample Card",
 		Text:     "This is a sample flash card.",
-		Answers:  []string{"Answer 1", "Answer 2"},
-		Media:    []string{"image.jpg", "audio.mp3"},
-		Lang:     []string{"English", "Spanish"},
+		Answers: []Model.Answer{
+			{
+				Field:            0,
+				Answers:          []string{"Answer1, Answer2"},
+				IncorrectAnswers: []string{"bad1", "bad2"},
+				Explanation:      "The answer one and answer two are correct because they are sample answers.",
+			},
+		},
+		Media: []string{"image.jpg", "audio.mp3"},
+		Lang:  []string{"English", "Spanish"},
 	}
 	err = Model.InsertOneFlashCard(ctx, db, card)
 	if err != nil {
@@ -41,9 +48,16 @@ func main() {
 			Username: Utilities.GenerateRandString(5),
 			Title:    Utilities.GenerateRandString(5),
 			Text:     Utilities.GenerateRandString(5),
-			Answers:  []string{Utilities.GenerateRandString(5), Utilities.GenerateRandString(5)},
-			Media:    []string{Utilities.GenerateRandString(5), Utilities.GenerateRandString(5)},
-			Lang:     []string{Utilities.GenerateRandString(5)},
+			Answers: []Model.Answer{
+				{
+					Field:            0,
+					Answers:          []string{"Answer1, Answer2"},
+					IncorrectAnswers: []string{"bad1", "bad2"},
+					Explanation:      "The answer one and answer two are correct because they are sample answers.",
+				},
+			},
+			Media: []string{Utilities.GenerateRandString(5), Utilities.GenerateRandString(5)},
+			Lang:  []string{Utilities.GenerateRandString(5)},
 		}
 	}
 
