@@ -1,0 +1,20 @@
+syntax = "proto3";
+option go_package = "card-service/Proto";
+
+message Answer {
+  int32 field = 1;
+  repeated string answers = 2;
+  repeated string incorrectAnswers = 3;
+  string explanation = 4;
+}
+
+message UserFlashCard {
+  string id = 1;
+  string username = 2;
+  string title = 3;
+  string text = 4;
+  repeated Answer answers = 5;
+  repeated string media = 6;
+  repeated string lang = 7;
+  repeated string topics = 8;
+}

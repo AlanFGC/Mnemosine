@@ -1,4 +1,4 @@
-package Model
+package deck
 
 import (
 	"context"
