@@ -8,8 +8,7 @@ message Answer {
   string explanation = 4;
 }
 
-message UserFlashCard {
-  string id = 1;
+message CreateUserFlashCard {
   string username = 2;
   string title = 3;
   string text = 4;

@@ -73,7 +73,7 @@ func main() {
 		fmt.Print("FAILED TO query by one by id")
 	}
 
-	multipleCards, err := card.GetCardsByUsername(ctx, db, "Alan", 0, 100000000)
+	multipleCards, err := card.GetCardsByUsername(ctx, db, "Alan", 1)
 	if err != nil {
 		fmt.Print("FAILED TO query by username")
 	}

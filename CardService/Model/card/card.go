@@ -3,6 +3,7 @@ package card
 import (
 	"card-service/Utilities"
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,6 +32,7 @@ type UserFlashCard struct {
 }
 
 const FlashCardCollectionName = "UserFlashCard"
+const PageSize = 1000
 
 func CreateCardCollection(ctx context.Context, db *mongo.Database) error {
 	err := db.CreateCollection(ctx, FlashCardCollectionName)
@@ -38,6 +40,21 @@ func CreateCardCollection(ctx context.Context, db *mongo.Database) error {
 		log.Fatal("Something went wrong", err)
 		return err
 	}
+	return nil
+}
+
+func CreateUserIndex(ctx context.Context, db *mongo.Database) error {
+	collection := db.Collection(FlashCardCollectionName)
+	indexModel := mongo.IndexModel{
+		Keys:    bson.D{{Key: "username", Value: 1}},
+		Options: options.Index().SetName("username_index"),
+	}
+	_, err := collection.Indexes().CreateOne(ctx, indexModel)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	log.Print("Username index created successfully.")
 	return nil
 }
 
@@ -86,14 +103,13 @@ func GetCardById(ctx context.Context, db *mongo.Database, ID string) (UserFlashC
 	return card, nil
 }
 
-func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string, page int, pageSize int) ([]UserFlashCard, error) {
+func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string, page int) (
+	[]UserFlashCard, error,
+) {
 	collection := db.Collection(FlashCardCollectionName)
 
-	// Define a filter to search for flashcards with the given username
-	filter := bson.M{"username": strings.ToLower(username)} // Convert username to lowercase for case-insensitive search
-
-	// Define options for pagination
-	opts := options.Find().SetSkip(int64((page - 1) * pageSize)).SetLimit(int64(pageSize))
+	filter := bson.M{"username": strings.ToLower(username)}
+	opts := options.Find().SetSkip(int64((page - 1) * PageSize)).SetLimit(int64(PageSize))
 
 	// Find the flashcards matching the filter and pagination options
 	cur, err := collection.Find(ctx, filter, opts)
@@ -107,7 +123,8 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 	// Iterate through the result set and decode each document into a UserFlashCard struct
 	for cur.Next(ctx) {
 		var card UserFlashCard
-		if err := cur.Decode(&card); err != nil {
+		err := cur.Decode(&card)
+		if err != nil {
 			log.Fatal("Error decoding flashcard:", err)
 			return nil, err
 		}
@@ -121,4 +138,73 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 	}
 
 	return cards, nil
+}
+
+func FindByTitle(ctx context.Context, db *mongo.Database, title string, page int) ([]UserFlashCard, error) {
+	coll := db.Collection(FlashCardCollectionName)
+
+	filter := bson.D{{"title", title}}
+	opts := options.Find().SetSkip(int64((page - 1) * PageSize)).SetLimit(int64(PageSize))
+	queryRes, err := coll.Find(ctx, filter, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	var cards []UserFlashCard
+
+	// Iterate through the result set and decode each document into a UserFlashCard struct
+	for queryRes.Next(ctx) {
+		var card UserFlashCard
+		err := queryRes.Decode(&card)
+		if err != nil {
+			log.Fatal("Error decoding flashcard:", err)
+			return nil, err
+		}
+		cards = append(cards, card)
+	}
+
+	return cards, nil
+}
+
+func UpdateById(ctx context.Context, db *mongo.Database, ID string, card UserFlashCard) error {
+
+	coll := db.Collection(FlashCardCollectionName)
+	// Convert the string ID to a primitive.ObjectID
+	objectID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return err
+	}
+
+	// Create a filter for the document to be updated
+	filter := bson.M{"_id": objectID}
+
+	// Create an update with the changes you want to apply
+	update := bson.M{
+		"$set": bson.M{
+			"username":    card.Username,
+			"title":       card.Title,
+			"text":        card.Text,
+			"answers":     card.Answers,
+			"media":       card.Media,
+			"languages":   card.Lang,
+			"topics":      card.Topics,
+			"dateCreated": card.DateCreated,
+		},
+	}
+
+	// Specify additional options, if needed
+	opts := options.Update().SetUpsert(false)
+
+	// Perform the update operation
+	result, err := coll.UpdateOne(ctx, filter, update, opts)
+	if err != nil {
+		return err
+	}
+
+	// Check if the update affected any documents
+	if result.ModifiedCount == 0 {
+		return errors.New("no documents were updated")
+	}
+
+	return nil
 }
