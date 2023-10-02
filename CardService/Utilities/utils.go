@@ -29,3 +29,22 @@ func GenerateRandString(n int) string {
 	}
 	return string(randString)
 }
+
+func UniqueSlice[T any](slice1, slice2 []T) []T {
+	resMap := make(map[any]bool)
+	for _, item := range slice1 {
+		resMap[item] = true
+	}
+
+	for _, item := range slice2 {
+		resMap[item] = true
+	}
+
+	res := make([]T, 0, len(resMap))
+
+	for item := range resMap {
+		res = append(res, item)
+	}
+
+	return res
+}

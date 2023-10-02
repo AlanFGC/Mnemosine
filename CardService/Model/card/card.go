@@ -192,7 +192,6 @@ func UpdateById(ctx context.Context, db *mongo.Database, ID string, card UserFla
 		},
 	}
 
-	// Specify additional options, if needed
 	opts := options.Update().SetUpsert(false)
 
 	// Perform the update operation
