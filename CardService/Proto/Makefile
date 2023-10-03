@@ -2,7 +2,7 @@
 PROTO_DIR := ./
 
 # Define the output directory for generated Go files
-OUTPUT_DIR := ./generated
+OUTPUT_DIR := ./
 
 # Collect all .proto files in the source directory
 PROTO_FILES := $(wildcard $(PROTO_DIR)/*.proto)

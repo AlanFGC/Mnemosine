@@ -1,6 +1,11 @@
 syntax = "proto3";
 option go_package = "card-service/Proto";
 
+
+service FlashCardService{
+  rpc CreateUserFlashCard(CreateFlashCardReq) returns (CreateFlashCardRes);
+}
+
 message Answer {
   int32 field = 1;
   repeated string answers = 2;
@@ -8,7 +13,18 @@ message Answer {
   string explanation = 4;
 }
 
-message CreateUserFlashCard {
+message CreateFlashCardReq {
+  string username = 1;
+  string title = 2;
+  string text = 3;
+  repeated Answer answers = 4;
+  repeated string media = 5;
+  repeated string lang = 6;
+  repeated string topics = 7;
+}
+
+message CreateFlashCardRes {
+  string id = 1;
   string username = 2;
   string title = 3;
   string text = 4;
@@ -16,4 +32,4 @@ message CreateUserFlashCard {
   repeated string media = 6;
   repeated string lang = 7;
   repeated string topics = 8;
-}
+}z
