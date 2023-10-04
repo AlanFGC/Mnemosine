@@ -43,7 +43,7 @@ func UniqueSlice[T any](slice1, slice2 []T) []T {
 	res := make([]T, 0, len(resMap))
 
 	for item := range resMap {
-		res = append(res, item)
+		res = append(res, item.(T))
 	}
 
 	return res

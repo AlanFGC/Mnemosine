@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "card-service/Proto";
+option go_package = "CardService";
 
 
 service FlashCardService{
@@ -32,4 +32,4 @@ message CreateFlashCardRes {
   repeated string media = 6;
   repeated string lang = 7;
   repeated string topics = 8;
-}z
+}
