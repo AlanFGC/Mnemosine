@@ -2,10 +2,22 @@ syntax = "proto3";
 option go_package = "card-service/Server";
 
 service CardService{
+  // DIAGNOSTICS
   rpc SayHello(Name) returns (Hello);
-  //rpc CreateUserFlashCard(CreateFlashCardReq) returns (CreateFlashCardRes);
+  // CREATE
+  rpc CreateUserFlashCard(CreateFlashCardReq) returns (CreateFlashCardRes);
+  rpc CreateDeck(CreateDeckReq) returns (CreateDeckRes);
+  // MODIFY
+  rpc EditCard(EditCardReq) returns (EditCardRes);
+  rpc EditDeck(EditDeckReq) returns (EditDeckRes);
+  // DELETE
+  // QUERY
+  rpc GetCardsByUsername(GetUserCardsByUsernameReq) returns (GetUserCardsByUsernameRes);
+  rpc GetCardsByDeckId(GetCardsByDeckIdReq) returns (GetCardsByDeckIdRes);
+  // JOBS
 }
 
+// UNITS
 message Name {
   string name = 1;
 }
@@ -21,17 +33,7 @@ message Answer {
   string explanation = 4;
 }
 
-message CreateFlashCardReq {
-  string username = 1;
-  string title = 2;
-  string text = 3;
-  repeated Answer answers = 4;
-  repeated string media = 5;
-  repeated string lang = 6;
-  repeated string topics = 7;
-}
-
-message CreateFlashCardRes {
+message FlashCard {
   string id = 1;
   string username = 2;
   string title = 3;
@@ -40,4 +42,66 @@ message CreateFlashCardRes {
   repeated string media = 6;
   repeated string lang = 7;
   repeated string topics = 8;
+  string date = 9;
+}
+
+message Deck {
+  string deckId = 1;
+  string title = 2;
+  string username = 3;
+  repeated string cardAuthors = 4;
+  repeated string topics = 5;
+  repeated string cardIds = 6;
+}
+
+message CreateFlashCardReq {
+  FlashCard card = 1;
+}
+
+message CreateFlashCardRes {
+  FlashCard card = 1;
+}
+
+message GetUserCardsByUsernameReq {
+  string username = 1;
+  int32 page = 2;
+  int32 limitPerPage = 3;
+}
+
+message GetUserCardsByUsernameRes {
+  repeated FlashCard cards = 1;
+}
+
+message CreateDeckReq {
+  Deck deck = 1;
+}
+
+message CreateDeckRes {
+  Deck deck = 1;
+}
+
+message EditCardReq {
+  string cardId = 1;
+  FlashCard card = 2;
+}
+
+message EditCardRes {
+  FlashCard card = 1;
+}
+
+message EditDeckReq {
+  string deckId = 1;
+  Deck deck = 2;
+}
+
+message EditDeckRes {
+  Deck deck = 1;
+}
+
+message GetCardsByDeckIdReq{
+  string deckId = 1;
+}
+
+message GetCardsByDeckIdRes{
+  repeated FlashCard cards = 1;
 }

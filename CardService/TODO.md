@@ -1,8 +1,13 @@
 # TODO
 ## Card Service
-- GRPC service driver
-- Test all the operations on the model
-- Finish setting up new model for decks
+- GRPC service driver ✅
+- operations on the model
+  - Create FlashCard for a user
+  - query all flashcards by users
+  - query flashcard per Deck
+  - Edit FlashCard
+  - Edit Deck
+  - Hide options
 
 ## Central Service
 - have a working API in whatever language
