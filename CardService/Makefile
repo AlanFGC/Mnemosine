@@ -6,4 +6,5 @@ run: build
 	./bin/cardService
 
 test:
+	grpcurl -plaintext -proto ./Server/cardService.proto -d '{"name":"World"}' localhost:50051 CardService/SayHello
 	go test -v ./...
