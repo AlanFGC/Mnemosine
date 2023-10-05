@@ -2,15 +2,38 @@ package main
 
 import (
 	"card-service/Model/card"
+	"card-service/Server"
+	"card-service/Service"
 	"card-service/Utilities"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 )
 
 func main() {
+
+	lis, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
+
+	cardService := Service.NewCardService(context.Background(), "mongodb://localhost:27017")
+	loggingService := Service.NewLoggingService(cardService)
+	cardServer := Server.NewGrpcServer(loggingService)
+	s := grpc.NewServer()
+
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
+	}
+
+}
+
+// TODO delete this
+func test() {
 	uri := "mongodb://localhost:27017"
 	ctx := context.TODO()
 	client, err := getClient(ctx, uri)

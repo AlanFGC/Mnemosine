@@ -1,9 +1,9 @@
 build:
 	@go mod tidy
-	@go build -o bin/fact
+	@go build -o bin/cardService
 
 run: build
-	./bin/fact
+	./bin/cardService
 
 test:
 	go test -v ./...

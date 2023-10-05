@@ -7,22 +7,24 @@ import (
 )
 
 type Service interface {
-	SayHello(ctx context.Context) string
+	SayHello(ctx context.Context, name string) string
 	//GetUserCard(ctx context.Context) (*card.UserFlashCard, error)
 }
 
 type CardService struct {
+	context     context.Context
 	databaseUrl string
 }
 
-func NewCardService(databaseUrl string) Service {
+func NewCardService(ctx context.Context, databaseUrl string) Service {
 	return &CardService{
+		context:     ctx,
 		databaseUrl: databaseUrl,
 	}
 }
 
-func (s *CardService) SayHello(ctx context.Context) string {
-	return "Hello World"
+func (s *CardService) SayHello(ctx context.Context, name string) string {
+	return "Hello, " + name
 }
 
 func (s *CardService) GetUserCard(ctx context.Context) (*card.UserFlashCard, error) {

@@ -1,9 +1,17 @@
 syntax = "proto3";
-option go_package = "CardService";
-
+option go_package = "card-service/pb";
 
 service FlashCardService{
-  rpc CreateUserFlashCard(CreateFlashCardReq) returns (CreateFlashCardRes);
+  rpc SayHello(Name) returns (Hello);
+  //rpc CreateUserFlashCard(CreateFlashCardReq) returns (CreateFlashCardRes);
+}
+
+message Name {
+  string name = 1;
+}
+
+message Hello {
+  string hello = 1;
 }
 
 message Answer {

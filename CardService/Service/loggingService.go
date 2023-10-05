@@ -16,11 +16,11 @@ func NewLoggingService(next Service) Service {
 	}
 }
 
-func (s *LoggingService) SayHello(ctx context.Context) (msg string) {
+func (s *LoggingService) SayHello(ctx context.Context, name string) (msg string) {
 
 	defer func(start time.Time) {
 		fmt.Printf("MSG: %v took=%v", msg, time.Since(start))
 	}(time.Now())
 
-	return s.SayHello(ctx)
+	return s.next.SayHello(ctx, name)
 }
