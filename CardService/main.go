@@ -14,6 +14,8 @@ import (
 	"net"
 )
 
+const database = "mongodb://localhost:27017"
+
 func main() {
 
 	lis, err := net.Listen("tcp", ":50051")
@@ -21,11 +23,11 @@ func main() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	cardService := Service.NewCardService(context.Background(), "mongodb://localhost:27017")
+	cardService := Service.NewCardService(context.Background(), database)
 	loggingService := Service.NewLoggingService(cardService)
 	cardServer := Server.NewGrpcServer(loggingService)
 	s := grpc.NewServer()
-
+	Server.RegisterCardServiceServer(s, &cardServer)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
