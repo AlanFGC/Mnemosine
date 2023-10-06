@@ -58,13 +58,19 @@ func CreateUserIndex(ctx context.Context, db *mongo.Database) error {
 	return nil
 }
 
-func InsertOne(ctx context.Context, db *mongo.Database, card UserFlashCard) error {
+func InsertOne(ctx context.Context, db *mongo.Database, card UserFlashCard) (string, error) {
 	collection := db.Collection(FlashCardCollectionName)
-	_, err := collection.InsertOne(ctx, card)
+	res, err := collection.InsertOne(ctx, card)
 	if err != nil {
-		log.Fatal("Couldn't insert one flashcard")
+		return "", err
 	}
-	return nil
+
+	insertedID, ok := res.InsertedID.(primitive.ObjectID)
+	if !ok {
+		return "", errors.New("Failed to cast InsertedID to ObjectID")
+	}
+
+	return insertedID.Hex(), nil
 }
 
 func InsertMany(ctx context.Context, db *mongo.Database, cards []UserFlashCard) ([]string, error) {

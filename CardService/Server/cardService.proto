@@ -59,7 +59,7 @@ message CreateFlashCardReq {
 }
 
 message CreateFlashCardRes {
-  FlashCard card = 1;
+  string id = 1;
 }
 
 message GetUserCardsByUsernameReq {

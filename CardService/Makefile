@@ -1,6 +1,6 @@
 build:
-	@go mod tidy
-	@go build -o bin/cardService
+	go mod tidy
+	go build -o bin/cardService
 
 run: build
 	./bin/cardService
