@@ -1,4 +1,4 @@
-package card
+package Model
 
 import (
 	"card-service/Utilities"
@@ -11,25 +11,6 @@ import (
 	"log"
 	"strings"
 )
-
-type Answer struct {
-	Field            int      `bson:"field"`
-	Answers          []string `bson:"answers"`
-	IncorrectAnswers []string `bson:"incorrectAnswers, omitempty"`
-	Explanation      string   `bson:"explanation,omitempty"`
-}
-
-type UserFlashCard struct {
-	ID          primitive.ObjectID `bson:"_id,omitempty"`
-	Username    string             `bson:"username, omitempty"`
-	Title       string             `bson:"title"`
-	Text        string             `bson:"text"`
-	Answers     []Answer           `bson:"answers"`
-	Media       []string           `bson:"media"`
-	Lang        []string           `bson:"languages"`
-	Topics      []string           `bson:"topics"`
-	DateCreated primitive.DateTime `bson:"dateCreated"`
-}
 
 const FlashCardCollectionName = "UserFlashCard"
 const PageSize = 1000
@@ -58,7 +39,7 @@ func CreateUserIndex(ctx context.Context, db *mongo.Database) error {
 	return nil
 }
 
-func InsertOne(ctx context.Context, db *mongo.Database, card UserFlashCard) (string, error) {
+func InsertOneCard(ctx context.Context, db *mongo.Database, card UserFlashCard) (string, error) {
 	collection := db.Collection(FlashCardCollectionName)
 	res, err := collection.InsertOne(ctx, card)
 	if err != nil {

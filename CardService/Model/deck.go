@@ -1,26 +1,16 @@
-package deck
+package Model
 
 import (
 	"context"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 )
 
-type Deck struct {
-	ID          primitive.ObjectID   `bson:"_id,omitempty"`
-	Title       string               `bson:"name"`
-	Username    string               `bson:"username,omitempty"`
-	CardAuthors []string             `bson:"cardAuthors"`
-	Topics      []string             `bson:"topics"`
-	Cards       []primitive.ObjectID `bson:"cardIds"`
-}
-
 const DeckCollectionName = "DeckCollection"
-const PageSize = 1000
+const DeckPageSize = 1000
 
 func CreateDeckCollection(ctx context.Context, db *mongo.Database) error {
 	err := db.CreateCollection(ctx, DeckCollectionName)
@@ -42,7 +32,7 @@ func InsertOneDeck(ctx context.Context, db *mongo.Database, deck Deck) {
 func GetDeckByUsername(ctx context.Context, db *mongo.Database, username string, page int) ([]Deck, error) {
 	collection := db.Collection(DeckCollectionName)
 	filter := bson.D{{"username", username}}
-	opts := options.Find().SetSkip(int64((page - 1) * PageSize)).SetLimit(int64(PageSize))
+	opts := options.Find().SetSkip(int64((page - 1) * DeckPageSize)).SetLimit(int64(DeckPageSize))
 
 	queryRes, err := collection.Find(ctx, filter, opts)
 	if err != nil {

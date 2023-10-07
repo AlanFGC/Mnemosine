@@ -29,13 +29,13 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to create logging service.")
 	}
-	cardServer := NewGrpcServer(loggingService)
+	cardServer := Server.NewGrpcServer(loggingService)
 	s := grpc.NewServer()
 
 	// TODO
 	// Change the parsing of data as the responsibility of grpc server, service should only handle native
 	// data structures, such that we can decouple server and service.
-	Server.RegisterCardServiceServer(s, &cardServer)
+	Server.RegisterCardServiceServer(s, cardServer)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}

@@ -1,7 +1,7 @@
 package Service
 
 import (
-	"card-service/Server"
+	"card-service/Model"
 	"context"
 )
 
@@ -19,26 +19,26 @@ func (s LoggingService) SayHello(ctx context.Context, name string) string {
 	return s.next.SayHello(ctx, name)
 }
 
-func (s LoggingService) CreateUserCard(ctx context.Context, in *Server.CreateFlashCardReq) (*Server.CreateFlashCardRes, error) {
-	return s.next.CreateUserCard(ctx, in)
+func (s LoggingService) CreateUserCard(ctx context.Context, card Model.UserFlashCard) (string, error) {
+	return s.next.CreateUserCard(ctx, card)
 }
 
-func (s LoggingService) EditCard(ctx context.Context, in *Server.EditCardReq) (*Server.EditCardRes, error) {
-	return s.EditCard(ctx, in)
+func (s LoggingService) EditCard(ctx context.Context, card Model.UserFlashCard) error {
+	return s.next.EditCard(ctx, card)
 }
 
-func (s LoggingService) CreateDeck(ctx context.Context, in *Server.CreateDeckReq) (*Server.CreateDeckRes, error) {
-	return s.CreateDeck(ctx, in)
+func (s LoggingService) CreateDeck(ctx context.Context, deck Model.Deck) (string, error) {
+	return s.next.CreateDeck(ctx, deck)
 }
 
-func (s LoggingService) EditDeck(ctx context.Context, in *Server.EditDeckReq) (*Server.EditDeckReq, error) {
-	return s.EditDeck(ctx, in)
+func (s LoggingService) EditDeck(ctx context.Context, deck Model.Deck) error {
+	return s.next.EditDeck(ctx, deck)
 }
 
-func (s LoggingService) GetCardsByUser(ctx context.Context, in *Server.GetUserCardsByUsernameReq) (*Server.GetUserCardsByUsernameRes, error) {
-	return s.next.GetCardsByUser(ctx, in)
+func (s LoggingService) GetCardsByUser(ctx context.Context, username string) ([]Model.UserFlashCard, error) {
+	return s.next.GetCardsByUser(ctx, username)
 }
 
-func (s LoggingService) GetCardsByDeck(ctx context.Context, in *Server.GetCardsByDeckIdReq) (*Server.GetCardsByDeckIdRes, error) {
-	return s.next.GetCardsByDeck(ctx, in)
+func (s LoggingService) GetCardsByDeck(ctx context.Context, deckID string) ([]Model.UserFlashCard, error) {
+	return s.next.GetCardsByUser(ctx, deckID)
 }

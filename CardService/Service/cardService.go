@@ -1,8 +1,7 @@
 package Service
 
 import (
-	"card-service/Model/card"
-	pb "card-service/Server"
+	"card-service/Model"
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -11,12 +10,12 @@ import (
 
 type Service interface {
 	SayHello(ctx context.Context, name string) string
-	CreateUserCard(ctx context.Context, in *pb.CreateFlashCardReq) (*pb.CreateFlashCardRes, error)
-	EditCard(ctx context.Context, in *pb.EditCardReq) (*pb.EditCardRes, error)
-	CreateDeck(ctx context.Context, in *pb.CreateDeckReq) (*pb.CreateDeckRes, error)
-	EditDeck(ctx context.Context, in *pb.EditDeckReq) (*pb.EditDeckReq, error)
-	GetCardsByUser(ctx context.Context, in *pb.GetUserCardsByUsernameReq) (*pb.GetUserCardsByUsernameRes, error)
-	GetCardsByDeck(ctx context.Context, in *pb.GetCardsByDeckIdReq) (*pb.GetCardsByDeckIdRes, error)
+	CreateUserCard(ctx context.Context, card Model.UserFlashCard) (string, error)
+	EditCard(ctx context.Context, card Model.UserFlashCard) error
+	CreateDeck(ctx context.Context, deck Model.Deck) (string, error)
+	EditDeck(ctx context.Context, deck Model.Deck) error
+	GetCardsByUser(ctx context.Context, username string) ([]Model.UserFlashCard, error)
+	GetCardsByDeck(ctx context.Context, deckID string) ([]Model.UserFlashCard, error)
 }
 
 type CardService struct {
@@ -71,62 +70,37 @@ func (s *CardService) StopAndDrop(ctx context.Context) error {
 	return nil
 }
 
-func (s *CardService) CreateDeck(ctx context.Context, in *pb.CreateDeckReq) (*pb.CreateDeckRes, error) {
-	return nil, nil
-}
-
-func (s *CardService) EditDeck(ctx context.Context, in *pb.EditDeckReq) (*pb.EditDeckReq, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *CardService) GetCardsByDeck(ctx context.Context, in *pb.GetCardsByDeckIdReq) (*pb.GetCardsByDeckIdRes, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *CardService) EditCard(ctx context.Context, in *pb.EditCardReq) (*pb.EditCardRes, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *CardService) GetCardsByUser(ctx context.Context, in *pb.GetUserCardsByUsernameReq) (*pb.GetUserCardsByUsernameRes, error) {
-	//TODO implement me
-	panic("implement me")
-}
+// METHODS FOR DATA
 
 func (s *CardService) SayHello(ctx context.Context, name string) string {
-	return "Hello, " + name
+	return "Hello " + name
 }
 
-func (s *CardService) CreateUserCard(ctx context.Context, in *pb.CreateFlashCardReq) (*pb.CreateFlashCardRes, error) {
-	var answers []card.Answer
+func (s *CardService) CreateUserCard(ctx context.Context, card Model.UserFlashCard) (string, error) {
+	return Model.InsertOneCard(ctx, s.db, card)
+}
 
-	for _, val := range in.Card.Answers {
-		answers = append(answers, card.Answer{
-			Field:            int(val.Field),
-			Answers:          val.Answers,
-			IncorrectAnswers: val.IncorrectAnswers,
-			Explanation:      val.Explanation,
-		})
-	}
+func (s *CardService) EditCard(ctx context.Context, card Model.UserFlashCard) error {
+	//TODO implement me
+	panic("implement me")
+}
 
-	insertCard := card.UserFlashCard{
-		Username:    in.Card.Username,
-		Title:       in.Card.Title,
-		Text:        in.Card.Text,
-		Answers:     answers,
-		Media:       in.Card.Media,
-		Lang:        in.Card.Lang,
-		Topics:      in.Card.Topics,
-		DateCreated: 0,
-	}
+func (s *CardService) CreateDeck(ctx context.Context, deck Model.Deck) (string, error) {
+	//TODO implement me
+	panic("implement me")
+}
 
-	id, err := card.InsertOne(ctx, s.db, insertCard)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.CreateFlashCardRes{
-		Id: id,
-	}, nil
+func (s *CardService) EditDeck(ctx context.Context, deck Model.Deck) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *CardService) GetCardsByUser(ctx context.Context, username string) ([]Model.UserFlashCard, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *CardService) GetCardsByDeck(ctx context.Context, deckID string) ([]Model.UserFlashCard, error) {
+	//TODO implement me
+	panic("implement me")
 }
