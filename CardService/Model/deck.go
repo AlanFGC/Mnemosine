@@ -3,10 +3,13 @@ package Model
 import (
 	"context"
 	"errors"
+	"fmt"
+	"log"
+
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 )
 
 const DeckCollectionName = "DeckCollection"
@@ -21,17 +24,24 @@ func CreateDeckCollection(ctx context.Context, db *mongo.Database) error {
 	return nil
 }
 
-func InsertOneDeck(ctx context.Context, db *mongo.Database, deck Deck) {
+func InsertOneDeck(ctx context.Context, db *mongo.Database, deck Deck) (string, error) {
 	collection := db.Collection(DeckCollectionName)
-	_, err := collection.InsertOne(ctx, deck)
+	res, err := collection.InsertOne(ctx, deck)
 	if err != nil {
-		log.Print("Failed to insert one deck")
+		return "", err
 	}
+
+	insertedID, ok := res.InsertedID.(primitive.ObjectID)
+	if !ok {
+		return "", fmt.Errorf("Failed to convert InsertedID to ObjectID")
+	}
+
+	return insertedID.Hex(), nil
 }
 
 func GetDeckByUsername(ctx context.Context, db *mongo.Database, username string, page int) ([]Deck, error) {
 	collection := db.Collection(DeckCollectionName)
-	filter := bson.D{{"username", username}}
+	filter := bson.D{{Key: "username", Value: username}}
 	opts := options.Find().SetSkip(int64((page - 1) * DeckPageSize)).SetLimit(int64(DeckPageSize))
 
 	queryRes, err := collection.Find(ctx, filter, opts)
@@ -55,12 +65,12 @@ func GetDeckByUsername(ctx context.Context, db *mongo.Database, username string,
 
 func InsertCardsToDeck(ctx context.Context, db *mongo.Database, deckID string, cardIDs []string) error {
 	collection := db.Collection(DeckCollectionName)
-	filter := bson.D{{"_id", deckID}}
+	filter := bson.D{{Key: "_id", Value: deckID}}
 
 	opts := options.Update().SetUpsert(false)
 	update := bson.D{
-		{"$addToSet", bson.D{
-			{"cardIds", bson.D{{"$each", cardIDs}}},
+		{Key: "$addToSet", Value: bson.D{
+			{Key: "cardIds", Value: bson.D{{Key: "$each", Value: cardIDs}}},
 		}},
 	}
 
@@ -78,12 +88,12 @@ func InsertCardsToDeck(ctx context.Context, db *mongo.Database, deckID string, c
 
 func RemoveCardsFromDeck(ctx context.Context, db *mongo.Database, deckID string, cardIDs []string) error {
 	collection := db.Collection(DeckCollectionName)
-	filter := bson.D{{"_id", deckID}}
+	filter := bson.D{{Key: "_id", Value: deckID}}
 
 	opts := options.Update().SetUpsert(false)
 	update := bson.D{
-		{"$pull", bson.D{
-			{"cardIds", bson.D{{"$each", cardIDs}}},
+		{Key: "$pull", Value: bson.D{
+			{Key: "cardIds", Value: bson.D{{Key: "$each", Value: cardIDs}}},
 		}},
 	}
 

@@ -4,9 +4,10 @@ import (
 	"card-service/Server"
 	"card-service/Service"
 	"context"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	"google.golang.org/grpc"
 )
 
 const database = "mongodb://localhost:27017"
@@ -25,6 +26,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to create card service.")
 	}
+
+	defer cardService.StopClean(context.Background())
+
 	loggingService, err := Service.NewLoggingService(cardService)
 	if err != nil {
 		log.Fatal("Failed to create logging service.")

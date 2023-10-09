@@ -4,12 +4,13 @@ import (
 	"card-service/Utilities"
 	"context"
 	"errors"
+	"log"
+	"strings"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"strings"
 )
 
 const FlashCardCollectionName = "UserFlashCard"
@@ -130,7 +131,7 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 func FindByTitle(ctx context.Context, db *mongo.Database, title string, page int) ([]UserFlashCard, error) {
 	coll := db.Collection(FlashCardCollectionName)
 
-	filter := bson.D{{"title", title}}
+	filter := bson.D{{Key: "title", Value: title}}
 	opts := options.Find().SetSkip(int64((page - 1) * PageSize)).SetLimit(int64(PageSize))
 	queryRes, err := coll.Find(ctx, filter, opts)
 	if err != nil {

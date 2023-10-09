@@ -42,3 +42,11 @@ func (s LoggingService) GetCardsByUser(ctx context.Context, username string) ([]
 func (s LoggingService) GetCardsByDeck(ctx context.Context, deckID string) ([]Model.UserFlashCard, error) {
 	return s.next.GetCardsByUser(ctx, deckID)
 }
+
+func (s LoggingService) StopClean(ctx context.Context) error {
+	return s.next.StopClean(ctx)
+}
+
+func (s LoggingService) Stop(ctx context.Context) error {
+	return s.next.Stop(ctx)
+}

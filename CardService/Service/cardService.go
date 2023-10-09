@@ -3,9 +3,10 @@ package Service
 import (
 	"card-service/Model"
 	"context"
+	"log"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 )
 
 type Service interface {
@@ -32,6 +33,13 @@ func NewCardService(ctx context.Context, databaseUrl string, databaseName string
 		return nil, err
 	}
 	db := client.Database(databaseName)
+
+
+	Model.CreateCardCollection(ctx, db)
+	Model.CreateDeckCollection(ctx, db)
+	Model.CreateUserIndex(ctx, db)
+
+
 	return &CardService{
 		context:      ctx,
 		databaseUrl:  databaseUrl,
@@ -58,7 +66,7 @@ func (s *CardService) Stop(ctx context.Context) error {
 	return nil
 }
 
-func (s *CardService) StopAndDrop(ctx context.Context) error {
+func (s *CardService) StopClean(ctx context.Context) error {
 	err := s.db.Drop(ctx)
 	if err != nil {
 		return err
@@ -81,13 +89,11 @@ func (s *CardService) CreateUserCard(ctx context.Context, card Model.UserFlashCa
 }
 
 func (s *CardService) EditCard(ctx context.Context, card Model.UserFlashCard) error {
-	//TODO implement me
-	panic("implement me")
+	return Model.UpdateById(ctx, s.db, card.ID.Hex(), card)
 }
 
 func (s *CardService) CreateDeck(ctx context.Context, deck Model.Deck) (string, error) {
-	//TODO implement me
-	panic("implement me")
+	return Model.
 }
 
 func (s *CardService) EditDeck(ctx context.Context, deck Model.Deck) error {
