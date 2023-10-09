@@ -29,3 +29,9 @@ type Deck struct {
 	Topics      []string             `bson:"topics"`
 	Cards       []primitive.ObjectID `bson:"cardIds"`
 }
+
+type Comment struct {
+	ID     primitive.ObjectID `bson:"_id,omitempty"`
+	Author string             `bson:"author"`
+	Text   string             `bson:"text"`
+}
