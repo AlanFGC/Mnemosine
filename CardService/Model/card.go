@@ -36,7 +36,7 @@ func CreateUserIndex(ctx context.Context, db *mongo.Database) error {
 		log.Fatal(err)
 		return err
 	}
-	log.Print("Username index created successfully.")
+
 	return nil
 }
 
@@ -55,7 +55,7 @@ func InsertOneCard(ctx context.Context, db *mongo.Database, card UserFlashCard) 
 	return insertedID.Hex(), nil
 }
 
-func InsertMany(ctx context.Context, db *mongo.Database, cards []UserFlashCard) ([]string, error) {
+func InsertManyCards(ctx context.Context, db *mongo.Database, cards []UserFlashCard) ([]string, error) {
 	collection := db.Collection(FlashCardCollectionName)
 	cardInterface := Utilities.ToInterfaceSlice(cards)
 

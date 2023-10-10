@@ -108,3 +108,27 @@ func RemoveCardsFromDeck(ctx context.Context, db *mongo.Database, deckID string,
 
 	return nil
 }
+
+func UpdateDeckById(ctx context.Context, db *mongo.Database, objectID primitive.ObjectID, deck Deck) error {
+	coll := db.Collection(DeckCollectionName)
+
+	filter := bson.M{"_id": objectID}
+
+	update := bson.M{
+		"$set": bson.M{
+			"title":       deck.Title,
+			"username":    deck.Username,
+			"cardAuthors": deck.CardAuthors,
+			"topics":      deck.Topics,
+			"cardIds":     deck.Cards,
+		},
+	}
+	opts := options.Update().SetUpsert(false)
+
+	_, err := coll.UpdateOne(ctx, filter, update, opts)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

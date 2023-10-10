@@ -3,6 +3,8 @@ package Service
 import (
 	"card-service/Model"
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/openpgp/errors"
 	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -34,11 +36,9 @@ func NewCardService(ctx context.Context, databaseUrl string, databaseName string
 	}
 	db := client.Database(databaseName)
 
-
 	Model.CreateCardCollection(ctx, db)
 	Model.CreateDeckCollection(ctx, db)
 	Model.CreateUserIndex(ctx, db)
-
 
 	return &CardService{
 		context:      ctx,
@@ -85,20 +85,31 @@ func (s *CardService) SayHello(ctx context.Context, name string) string {
 }
 
 func (s *CardService) CreateUserCard(ctx context.Context, card Model.UserFlashCard) (string, error) {
+	if card.Username == "" {
+		return "", errors.InvalidArgumentError("username can't be null")
+	}
 	return Model.InsertOneCard(ctx, s.db, card)
 }
 
 func (s *CardService) EditCard(ctx context.Context, card Model.UserFlashCard) error {
+	if card.Username == "" {
+		return errors.InvalidArgumentError("username can't be null")
+	}
 	return Model.UpdateById(ctx, s.db, card.ID.Hex(), card)
 }
 
 func (s *CardService) CreateDeck(ctx context.Context, deck Model.Deck) (string, error) {
-	return Model.
+	if deck.Username == "" {
+		return "", errors.InvalidArgumentError("username can't be null")
+	}
+	deck.Cards = makeArrayObjectIdArrayUnique(deck.Cards)
+
+	return Model.InsertOneDeck(ctx, s.db, deck)
 }
 
 func (s *CardService) EditDeck(ctx context.Context, deck Model.Deck) error {
-	//TODO implement me
-	panic("implement me")
+	deck.Cards = makeArrayObjectIdArrayUnique(deck.Cards)
+	return Model.UpdateDeckById(ctx, s.db, deck.ID, deck)
 }
 
 func (s *CardService) GetCardsByUser(ctx context.Context, username string) ([]Model.UserFlashCard, error) {
@@ -109,4 +120,17 @@ func (s *CardService) GetCardsByUser(ctx context.Context, username string) ([]Mo
 func (s *CardService) GetCardsByDeck(ctx context.Context, deckID string) ([]Model.UserFlashCard, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func makeArrayObjectIdArrayUnique(ids []primitive.ObjectID) []primitive.ObjectID {
+	set := map[primitive.ObjectID]bool{}
+	uniqueArray := []primitive.ObjectID{}
+
+	for _, val := range ids {
+		if !set[val] {
+			uniqueArray = append(uniqueArray, val)
+			set[val] = true
+		}
+	}
+	return uniqueArray
 }

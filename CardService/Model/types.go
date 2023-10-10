@@ -23,8 +23,8 @@ type UserFlashCard struct {
 
 type Deck struct {
 	ID          primitive.ObjectID   `bson:"_id,omitempty"`
-	Title       string               `bson:"name"`
-	Username    string               `bson:"username,omitempty"`
+	Title       string               `bson:"title"`
+	Username    string               `bson:"username,"`
 	CardAuthors []string             `bson:"cardAuthors"`
 	Topics      []string             `bson:"topics"`
 	Cards       []primitive.ObjectID `bson:"cardIds"`
