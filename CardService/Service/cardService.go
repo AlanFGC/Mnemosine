@@ -19,6 +19,7 @@ type Service interface {
 	EditDeck(ctx context.Context, deck Model.Deck) error
 	GetCardsByUser(ctx context.Context, username string) ([]Model.UserFlashCard, error)
 	GetCardsByDeck(ctx context.Context, deckID string) ([]Model.UserFlashCard, error)
+	Stop(ctx context.Context) error
 }
 
 type CardService struct {
@@ -52,7 +53,7 @@ func NewCardService(ctx context.Context, databaseUrl string, databaseName string
 func getClient(ctx context.Context, URI string) (*mongo.Client, error) {
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(URI))
 	if err != nil {
-		log.Fatal("unable to get client", err)
+		log.Fatal("unable to get client: ", err)
 		return nil, err
 	}
 	return client, err
@@ -113,18 +114,16 @@ func (s *CardService) EditDeck(ctx context.Context, deck Model.Deck) error {
 }
 
 func (s *CardService) GetCardsByUser(ctx context.Context, username string) ([]Model.UserFlashCard, error) {
-	//TODO implement me
-	panic("implement me")
+	return s.GetCardsByDeck(ctx, username)
 }
 
 func (s *CardService) GetCardsByDeck(ctx context.Context, deckID string) ([]Model.UserFlashCard, error) {
-	//TODO implement me
-	panic("implement me")
+	return s.GetCardsByDeck(ctx, deckID)
 }
 
 func makeArrayObjectIdArrayUnique(ids []primitive.ObjectID) []primitive.ObjectID {
 	set := map[primitive.ObjectID]bool{}
-	uniqueArray := []primitive.ObjectID{}
+	var uniqueArray []primitive.ObjectID
 
 	for _, val := range ids {
 		if !set[val] {

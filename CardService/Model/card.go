@@ -17,9 +17,23 @@ const FlashCardCollectionName = "UserFlashCard"
 const PageSize = 1000
 
 func CreateCardCollection(ctx context.Context, db *mongo.Database) error {
-	err := db.CreateCollection(ctx, FlashCardCollectionName)
+
+	filter := bson.D{{Key: "name", Value: FlashCardCollectionName}}
+	names, err := db.ListCollectionNames(ctx, filter, nil)
 	if err != nil {
-		log.Fatal("Something went wrong", err)
+		log.Fatal("List of names couldn't be retrieved for Card Collection: ", err)
+		return err
+	}
+
+	for _, name := range names {
+		if name == FlashCardCollectionName {
+			return nil
+		}
+	}
+
+	err = db.CreateCollection(ctx, FlashCardCollectionName)
+	if err != nil {
+		log.Fatal("Failed to create collection flashcards: ", err)
 		return err
 	}
 	return nil

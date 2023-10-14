@@ -18,8 +18,9 @@ func NewGrpcServer(s Service.Service) *GrpcServer {
 }
 
 func (g GrpcServer) SayHello(ctx context.Context, name *Name) (*Hello, error) {
-	//TODO implement me
-	panic("implement me")
+	greet := g.service.SayHello(ctx, name.GetName())
+	res := Hello{Hello: greet}
+	return &res, nil
 }
 
 func (g GrpcServer) CreateUserFlashCard(ctx context.Context, in *CreateFlashCardReq) (*CreateFlashCardRes, error) {

@@ -16,9 +16,23 @@ const DeckCollectionName = "DeckCollection"
 const DeckPageSize = 1000
 
 func CreateDeckCollection(ctx context.Context, db *mongo.Database) error {
-	err := db.CreateCollection(ctx, DeckCollectionName)
+
+	filter := bson.D{{Key: "name", Value: DeckCollectionName}}
+	names, err := db.ListCollectionNames(ctx, filter, nil)
 	if err != nil {
-		log.Fatal("Something went wrong", err)
+		log.Fatal("List of names couldn't be retrieved for Deck Collection: ", err)
+		return err
+	}
+
+	for _, name := range names {
+		if name == DeckCollectionName {
+			return nil
+		}
+	}
+
+	err = db.CreateCollection(ctx, DeckCollectionName)
+	if err != nil {
+		log.Fatal("Failed to create collection Decks: ", err)
 		return err
 	}
 	return nil

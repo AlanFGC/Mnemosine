@@ -27,7 +27,7 @@ func main() {
 		log.Fatal("Failed to create card service.")
 	}
 
-	defer cardService.StopClean(context.Background())
+	//defer cardService.Stop(context.TODO())
 
 	loggingService, err := Service.NewLoggingService(cardService)
 	if err != nil {
@@ -36,13 +36,10 @@ func main() {
 	cardServer := Server.NewGrpcServer(loggingService)
 	s := grpc.NewServer()
 
-	// TODO
-	// Change the parsing of data as the responsibility of grpc server, service should only handle native
-	// data structures, such that we can decouple server and service.
 	Server.RegisterCardServiceServer(s, cardServer)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
 
-	defer s.Stop()
+	//defer s.Stop()
 }
