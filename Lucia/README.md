@@ -1,6 +1,6 @@
 # Lucia
 Lucia is the frondend web app for Mnemosine. 
-IT's using Typescript and react to give basic yet effective front end for the application.
+It's using Typescript and react to give basic yet effective front end for the application.
 
 
 ## React + TypeScript + Vite
