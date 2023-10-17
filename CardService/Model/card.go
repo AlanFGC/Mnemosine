@@ -88,21 +88,42 @@ func InsertManyCards(ctx context.Context, db *mongo.Database, cards []UserFlashC
 	return result, nil
 }
 
-func GetCardById(ctx context.Context, db *mongo.Database, ID string) (UserFlashCard, error) {
-	var card UserFlashCard
+func GetCardByIds(ctx context.Context, db *mongo.Database, IDs []string) ([]UserFlashCard, error) {
+	var cards []UserFlashCard
+	var newId primitive.ObjectID
+	var objectIDs []primitive.ObjectID
+	var err error
 
-	objectID, err := primitive.ObjectIDFromHex(ID)
-	if err != nil {
-		return card, err
+	for _, id := range IDs {
+		newId, err = primitive.ObjectIDFromHex(id)
+		if err != nil {
+			return nil, err
+		}
+		objectIDs = append(objectIDs, newId)
 	}
 
-	filter := bson.M{"_id": objectID}
+	filter := bson.M{"_id": bson.M{"$in": objectIDs}}
 
-	err = db.Collection(FlashCardCollectionName).FindOne(ctx, filter).Decode(&card)
+	cursor, err := db.Collection(FlashCardCollectionName).Find(ctx, filter)
 	if err != nil {
-		return card, err
+		return nil, err
 	}
-	return card, nil
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		var card UserFlashCard
+		err := cursor.Decode(&card)
+		if err != nil {
+			return nil, err
+		}
+		cards = append(cards, card)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return cards, nil
 }
 
 func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string, page int) (
@@ -113,7 +134,6 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 	filter := bson.M{"username": strings.ToLower(username)}
 	opts := options.Find().SetSkip(int64((page - 1) * PageSize)).SetLimit(int64(PageSize))
 
-	// Find the flashcards matching the filter and pagination options
 	cur, err := collection.Find(ctx, filter, opts)
 	if err != nil {
 		log.Fatal("Error while finding flashcards:", err)
@@ -122,7 +142,6 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 
 	var cards []UserFlashCard
 
-	// Iterate through the result set and decode each document into a UserFlashCard struct
 	for cur.Next(ctx) {
 		var card UserFlashCard
 		err := cur.Decode(&card)
