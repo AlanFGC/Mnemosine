@@ -1,14 +1,22 @@
 import { Button } from 'antd';
-
-function sayHello(): void {
-  console.log('Hello World!');
-}
+import { useCallback, useState } from 'react';
+import CardEditor from './Components/FlashCardEditor/CardEditor';
 
 function App() {
+  const [cardEditorValue, setCardEditorValue] = useState('');
+  const handleCardEditorChange = useCallback((text: string) => {
+    setCardEditorValue(text);
+  }, [setCardEditorValue]);
+
+  const handleButtonClick = useCallback(() => {
+    console.log(cardEditorValue);
+  }, [cardEditorValue]);
+
   return (
     <div className="App">
       <h1>Welcome to Mnesomine</h1>
-      <Button type="primary" onClick={sayHello}>Button</Button>
+      <CardEditor onTextChange={handleCardEditorChange} />
+      <Button type="primary" onClick={handleButtonClick}>Button</Button>
     </div>
   );
 }
