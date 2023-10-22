@@ -6,7 +6,7 @@ import (
 	"context"
 	"log"
 	"net"
-
+	"fmt"
 	"google.golang.org/grpc"
 )
 
@@ -16,13 +16,15 @@ const dbName = "mnemosine"
 
 func main() {
 
+	fmt.Printf("SERVER ON: %s%s\n", "localhost",port)
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 	defer lis.Close()
 
-	cardService, err := Service.NewCardService(context.Background(), database, dbName)
+	cardService, err := Service.NewCardService(context.TODO(), database, dbName)
 	if err != nil {
 		log.Fatal("Failed to create card service.")
 	}
@@ -40,6 +42,8 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
+
+
 
 	//defer s.Stop()
 }
