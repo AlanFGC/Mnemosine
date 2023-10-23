@@ -17,6 +17,13 @@ service CardService{
   // JOBS
 }
 
+enum QuestionType {
+  OPEN = 0;
+  SINGLE_ANSWER = 1;
+  MULTIPLE_CHOICE = 2;
+} 
+
+
 // UNITS
 message Name {
   string name = 1;
@@ -31,6 +38,7 @@ message Answer {
   repeated string answers = 2;
   repeated string incorrectAnswers = 3;
   string explanation = 4;
+  QuestionType questionType = 5;
 }
 
 message FlashCard {

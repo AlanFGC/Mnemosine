@@ -2,11 +2,21 @@ package Model
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
+type QuestionType string
+
+const (
+	Open           QuestionType = "open"
+	SingleAnswer   QuestionType = "single"
+	MultipleChoice QuestionType = "multiple"
+	Undefined      QuestionType = "undefined"
+)
+
 type Answer struct {
-	Field            int      `bson:"field"`
-	Answers          []string `bson:"answers"`
-	IncorrectAnswers []string `bson:"incorrectAnswers, omitempty"`
-	Explanation      string   `bson:"explanation,omitempty"`
+	Field            int          `bson:"field"`
+	Answers          []string     `bson:"answers"`
+	IncorrectAnswers []string     `bson:"incorrectAnswers, omitempty"`
+	Explanation      string       `bson:"explanation,omitempty"`
+	QuestionType     QuestionType `bson:"questionType"`
 }
 
 type UserFlashCard struct {

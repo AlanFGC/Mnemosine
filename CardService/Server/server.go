@@ -4,6 +4,7 @@ import (
 	"card-service/Model"
 	"card-service/Service"
 	"context"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -118,11 +119,24 @@ func protoAnswerToModelAnswer(in []*Answer) (out []Model.Answer) {
 	var answers []Model.Answer
 
 	for _, val := range in {
+		var qType Model.QuestionType
+
+		if val.QuestionType == 0 {
+			qType = Model.Open
+		} else if val.QuestionType == 1 {
+			qType = Model.SingleAnswer
+		} else if val.QuestionType == 2 {
+			qType = Model.MultipleChoice
+		} else {
+			qType = Model.Undefined
+		}
+
 		answers = append(answers, Model.Answer{
 			Field:            int(val.Field),
 			Answers:          val.Answers,
 			IncorrectAnswers: val.IncorrectAnswers,
 			Explanation:      val.Explanation,
+			QuestionType:     qType,
 		})
 	}
 

@@ -17,7 +17,6 @@ const FlashCardCollectionName = "UserFlashCard"
 const PageSize = 1000
 
 func CreateCardCollection(ctx context.Context, db *mongo.Database) error {
-
 	filter := bson.D{{Key: "name", Value: FlashCardCollectionName}}
 	names, err := db.ListCollectionNames(ctx, filter, nil)
 	if err != nil {
@@ -58,6 +57,7 @@ func InsertOneCard(ctx context.Context, db *mongo.Database, card UserFlashCard) 
 	collection := db.Collection(FlashCardCollectionName)
 	res, err := collection.InsertOne(ctx, card)
 	if err != nil {
+		log.Fatal("Failed to insertOne into the database: ", err)
 		return "", err
 	}
 
