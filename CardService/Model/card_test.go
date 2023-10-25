@@ -16,7 +16,7 @@ func TestInsertOneCardIntegration(t *testing.T) {
 
 	mt.Run("Insert one card", func(mt *mtest.T) {
 
-		card := UserFlashCard{
+		cards := []UserFlashCard{{
 			ID:       primitive.NewObjectID(),
 			Username: "JohnDoe",
 			Title:    "Sample Card",
@@ -32,7 +32,7 @@ func TestInsertOneCardIntegration(t *testing.T) {
 			Lang:        []string{"en", "es"},
 			Topics:      []string{"sample"},
 			DateCreated: primitive.NewDateTimeFromTime(time.Now()),
-		}
+		}}
 
 		mockResponse := mtest.CreateSuccessResponse()
 		mt.AddMockResponses(mockResponse)
@@ -40,11 +40,12 @@ func TestInsertOneCardIntegration(t *testing.T) {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		id, err := InsertOneCard(ctx, mt.DB, card)
+		id, err := InsertCards(ctx, mt.DB, cards)
 		if err != nil {
 			mt.Log("Error found when inserting a card:", err)
 			mt.Fail()
 		}
+
 		assert.NotEqual(t, "", id)
 	})
 }

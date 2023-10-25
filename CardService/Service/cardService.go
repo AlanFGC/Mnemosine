@@ -3,9 +3,10 @@ package Service
 import (
 	"card-service/Model"
 	"context"
+	"log"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/openpgp/errors"
-	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -89,7 +90,16 @@ func (s *CardService) CreateUserCard(ctx context.Context, card Model.UserFlashCa
 	if card.Username == "" {
 		return "", errors.InvalidArgumentError("username can't be null")
 	}
-	return Model.InsertOneCard(ctx, s.db, card)
+	var cards []Model.UserFlashCard
+
+	id, err := Model.InsertCards(ctx, s.db, cards)
+	if err != nil {
+		return "", err
+	} else if len(id) != 1 {
+		return "", errors.UnsupportedError("More than one id returned")
+	}
+
+	return id[0], nil
 }
 
 func (s *CardService) EditCard(ctx context.Context, card Model.UserFlashCard) error {
