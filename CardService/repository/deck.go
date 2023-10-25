@@ -1,6 +1,7 @@
-package Model
+package repository
 
 import (
+	"card-service/Model"
 	"context"
 	"errors"
 	"fmt"
@@ -38,7 +39,7 @@ func CreateDeckCollection(ctx context.Context, db *mongo.Database) error {
 	return nil
 }
 
-func InsertOneDeck(ctx context.Context, db *mongo.Database, deck Deck) (string, error) {
+func InsertOneDeck(ctx context.Context, db *mongo.Database, deck Model.Deck) (string, error) {
 	collection := db.Collection(DeckCollectionName)
 	res, err := collection.InsertOne(ctx, deck)
 	if err != nil {
@@ -53,7 +54,7 @@ func InsertOneDeck(ctx context.Context, db *mongo.Database, deck Deck) (string, 
 	return insertedID.Hex(), nil
 }
 
-func GetDeckByUsername(ctx context.Context, db *mongo.Database, username string, page int) ([]Deck, error) {
+func GetDeckByUsername(ctx context.Context, db *mongo.Database, username string, page int) ([]Model.Deck, error) {
 	collection := db.Collection(DeckCollectionName)
 	filter := bson.D{{Key: "username", Value: username}}
 	opts := options.Find().SetSkip(int64((page - 1) * DeckPageSize)).SetLimit(int64(DeckPageSize))
@@ -63,10 +64,10 @@ func GetDeckByUsername(ctx context.Context, db *mongo.Database, username string,
 		return nil, err
 	}
 
-	var decks []Deck
+	var decks []Model.Deck
 
 	for queryRes.Next(ctx) {
-		var deck Deck
+		var deck Model.Deck
 		err := queryRes.Decode(&deck)
 		if err != nil {
 			log.Fatal("Error decoding deck:", err)
@@ -123,7 +124,7 @@ func RemoveCardsFromDeck(ctx context.Context, db *mongo.Database, deckID string,
 	return nil
 }
 
-func UpdateDeckById(ctx context.Context, db *mongo.Database, objectID primitive.ObjectID, deck Deck) error {
+func UpdateDeckById(ctx context.Context, db *mongo.Database, objectID primitive.ObjectID, deck Model.Deck) error {
 	coll := db.Collection(DeckCollectionName)
 
 	filter := bson.M{"_id": objectID}

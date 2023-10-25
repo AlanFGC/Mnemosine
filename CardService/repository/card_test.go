@@ -1,6 +1,7 @@
-package Model
+package repository
 
 import (
+	"card-service/Model"
 	"context"
 	"testing"
 	"time"
@@ -16,16 +17,16 @@ func TestInsertOneCardIntegration(t *testing.T) {
 
 	mt.Run("Insert one card", func(mt *mtest.T) {
 
-		cards := []UserFlashCard{{
+		cards := []Model.UserFlashCard{{
 			ID:       primitive.NewObjectID(),
 			Username: "JohnDoe",
 			Title:    "Sample Card",
 			Text:     "This is a sample flash card.",
-			Answers: []Answer{
+			Answers: []Model.Answer{
 				{
 					Field:        1,
 					Answers:      []string{"Correct Answer"},
-					QuestionType: SingleAnswer,
+					QuestionType: Model.SingleAnswer,
 				},
 			},
 			Media:       []string{"sample.jpg"},

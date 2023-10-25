@@ -1,6 +1,7 @@
-package Model
+package repository
 
 import (
+	"card-service/Model"
 	"card-service/Utilities"
 	"context"
 	"errors"
@@ -15,6 +16,8 @@ import (
 
 const FlashCardCollectionName = "UserFlashCard"
 const PageSize = 1000
+
+// SETUP
 
 func CreateCardCollection(ctx context.Context, db *mongo.Database) error {
 	filter := bson.D{{Key: "name", Value: FlashCardCollectionName}}
@@ -53,7 +56,9 @@ func CreateUserIndex(ctx context.Context, db *mongo.Database) error {
 	return nil
 }
 
-func InsertCards(ctx context.Context, db *mongo.Database, cards []UserFlashCard) ([]string, error) {
+// OPERATIONS
+
+func InsertCards(ctx context.Context, db *mongo.Database, cards []Model.UserFlashCard) ([]string, error) {
 	collection := db.Collection(FlashCardCollectionName)
 	cardInterface := Utilities.ToInterfaceSlice(cards)
 
@@ -72,8 +77,8 @@ func InsertCards(ctx context.Context, db *mongo.Database, cards []UserFlashCard)
 	return result, nil
 }
 
-func GetCardByIds(ctx context.Context, db *mongo.Database, IDs []string) ([]UserFlashCard, error) {
-	var cards []UserFlashCard
+func GetCardByIds(ctx context.Context, db *mongo.Database, IDs []string) ([]Model.UserFlashCard, error) {
+	var cards []Model.UserFlashCard
 	var newId primitive.ObjectID
 	var objectIDs []primitive.ObjectID
 	var err error
@@ -95,7 +100,7 @@ func GetCardByIds(ctx context.Context, db *mongo.Database, IDs []string) ([]User
 	defer cursor.Close(ctx)
 
 	for cursor.Next(ctx) {
-		var card UserFlashCard
+		var card Model.UserFlashCard
 		err := cursor.Decode(&card)
 		if err != nil {
 			return nil, err
@@ -111,7 +116,7 @@ func GetCardByIds(ctx context.Context, db *mongo.Database, IDs []string) ([]User
 }
 
 func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string, page int) (
-	[]UserFlashCard, error,
+	[]Model.UserFlashCard, error,
 ) {
 	collection := db.Collection(FlashCardCollectionName)
 
@@ -124,10 +129,10 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 		return nil, err
 	}
 
-	var cards []UserFlashCard
+	var cards []Model.UserFlashCard
 
 	for cur.Next(ctx) {
-		var card UserFlashCard
+		var card Model.UserFlashCard
 		err := cur.Decode(&card)
 		if err != nil {
 			log.Fatal("Error decoding flashcard:", err)
@@ -145,7 +150,7 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 	return cards, nil
 }
 
-func FindByTitle(ctx context.Context, db *mongo.Database, title string, page int) ([]UserFlashCard, error) {
+func FindByTitle(ctx context.Context, db *mongo.Database, title string, page int) ([]Model.UserFlashCard, error) {
 	coll := db.Collection(FlashCardCollectionName)
 
 	filter := bson.D{{Key: "title", Value: title}}
@@ -155,11 +160,11 @@ func FindByTitle(ctx context.Context, db *mongo.Database, title string, page int
 		return nil, err
 	}
 
-	var cards []UserFlashCard
+	var cards []Model.UserFlashCard
 
 	// Iterate through the result set and decode each document into a UserFlashCard struct
 	for queryRes.Next(ctx) {
-		var card UserFlashCard
+		var card Model.UserFlashCard
 		err := queryRes.Decode(&card)
 		if err != nil {
 			log.Fatal("Error decoding flashcard:", err)
@@ -171,7 +176,7 @@ func FindByTitle(ctx context.Context, db *mongo.Database, title string, page int
 	return cards, nil
 }
 
-func UpdateById(ctx context.Context, db *mongo.Database, ID string, card UserFlashCard) error {
+func UpdateById(ctx context.Context, db *mongo.Database, ID string, card Model.UserFlashCard) error {
 
 	coll := db.Collection(FlashCardCollectionName)
 	// Convert the string ID to a primitive.ObjectID
@@ -199,13 +204,12 @@ func UpdateById(ctx context.Context, db *mongo.Database, ID string, card UserFla
 
 	opts := options.Update().SetUpsert(false)
 
-	// Perform the update operation
+	// Perform the update
 	result, err := coll.UpdateOne(ctx, filter, update, opts)
 	if err != nil {
 		return err
 	}
 
-	// Check if the update affected any documents
 	if result.ModifiedCount == 0 {
 		return errors.New("no documents were updated")
 	}

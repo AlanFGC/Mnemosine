@@ -2,6 +2,7 @@ package Service
 
 import (
 	"card-service/Model"
+	"card-service/repository"
 	"context"
 	"log"
 
@@ -38,9 +39,9 @@ func NewCardService(ctx context.Context, databaseUrl string, databaseName string
 	}
 	db := client.Database(databaseName)
 
-	Model.CreateCardCollection(ctx, db)
-	Model.CreateDeckCollection(ctx, db)
-	Model.CreateUserIndex(ctx, db)
+	repository.CreateCardCollection(ctx, db)
+	repository.CreateDeckCollection(ctx, db)
+	repository.CreateUserIndex(ctx, db)
 
 	return &CardService{
 		context:      ctx,
@@ -92,7 +93,7 @@ func (s *CardService) CreateUserCard(ctx context.Context, card Model.UserFlashCa
 	}
 	var cards []Model.UserFlashCard
 
-	id, err := Model.InsertCards(ctx, s.db, cards)
+	id, err := repository.InsertCards(ctx, s.db, cards)
 	if err != nil {
 		return "", err
 	} else if len(id) != 1 {
@@ -106,7 +107,7 @@ func (s *CardService) EditCard(ctx context.Context, card Model.UserFlashCard) er
 	if card.Username == "" {
 		return errors.InvalidArgumentError("username can't be null")
 	}
-	return Model.UpdateById(ctx, s.db, card.ID.Hex(), card)
+	return repository.UpdateById(ctx, s.db, card.ID.Hex(), card)
 }
 
 func (s *CardService) CreateDeck(ctx context.Context, deck Model.Deck) (string, error) {
@@ -115,12 +116,12 @@ func (s *CardService) CreateDeck(ctx context.Context, deck Model.Deck) (string, 
 	}
 	deck.Cards = makeArrayObjectIdArrayUnique(deck.Cards)
 
-	return Model.InsertOneDeck(ctx, s.db, deck)
+	return repository.InsertOneDeck(ctx, s.db, deck)
 }
 
 func (s *CardService) EditDeck(ctx context.Context, deck Model.Deck) error {
 	deck.Cards = makeArrayObjectIdArrayUnique(deck.Cards)
-	return Model.UpdateDeckById(ctx, s.db, deck.ID, deck)
+	return repository.UpdateDeckById(ctx, s.db, deck.ID, deck)
 }
 
 func (s *CardService) GetCardsByUser(ctx context.Context, username string) ([]Model.UserFlashCard, error) {
