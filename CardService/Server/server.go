@@ -30,7 +30,7 @@ func (g GrpcServer) CreateUserFlashCard(ctx context.Context, in *CreateFlashCard
 	for _, val := range in.Card.Answers {
 		answers = append(answers, Model.Answer{
 			Field:            int(val.Field),
-			Answers:          val.Answers,
+			Answer:           val.Answers,
 			IncorrectAnswers: val.IncorrectAnswers,
 			Explanation:      val.Explanation,
 		})

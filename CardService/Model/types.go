@@ -13,7 +13,7 @@ const (
 
 type Answer struct {
 	Field            int          `bson:"field"`
-	Answers          []string     `bson:"answers"`
+	Answer           string       `bson:"answer"`
 	IncorrectAnswers []string     `bson:"incorrectAnswers, omitempty"`
 	Explanation      string       `bson:"explanation,omitempty"`
 	QuestionType     QuestionType `bson:"questionType"`
@@ -34,7 +34,7 @@ type UserFlashCard struct {
 type Deck struct {
 	ID          primitive.ObjectID   `bson:"_id,omitempty"`
 	Title       string               `bson:"title"`
-	Username    string               `bson:"username,"`
+	Username    string               `bson:"username"`
 	CardAuthors []string             `bson:"cardAuthors"`
 	Topics      []string             `bson:"topics"`
 	Cards       []primitive.ObjectID `bson:"cardIds"`

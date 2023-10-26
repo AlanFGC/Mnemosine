@@ -128,6 +128,7 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 		log.Fatal("Error while finding flashcards:", err)
 		return nil, err
 	}
+	defer cur.Close(ctx)
 
 	var cards []Model.UserFlashCard
 
@@ -141,7 +142,6 @@ func GetCardsByUsername(ctx context.Context, db *mongo.Database, username string
 		cards = append(cards, card)
 	}
 
-	// Check for errors from iterating over the cursor
 	if err := cur.Err(); err != nil {
 		log.Fatal("Error during cursor iteration:", err)
 		return nil, err
