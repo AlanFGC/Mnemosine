@@ -37,7 +37,7 @@ func TestInsertOneCardIntegration(t *testing.T) {
 			Answers: []Model.Answer{
 				{
 					Field:        1,
-					Answer:       TESTANSWER1,
+					Answers:      []string{TESTANSWER1},
 					QuestionType: Model.SingleAnswer,
 				},
 			},
@@ -71,7 +71,7 @@ func TestInsertOneCardIntegration(t *testing.T) {
 			Answers: []Model.Answer{
 				{
 					Field:        1,
-					Answer:       TESTANSWER1,
+					Answers:      []string{TESTANSWER1},
 					QuestionType: Model.SingleAnswer,
 				},
 			},
@@ -87,7 +87,7 @@ func TestInsertOneCardIntegration(t *testing.T) {
 				Answers: []Model.Answer{
 					{
 						Field:        1,
-						Answer:       TESTANSWER1,
+						Answers:      []string{TESTANSWER2},
 						QuestionType: Model.SingleAnswer,
 					},
 				},
@@ -103,7 +103,7 @@ func TestInsertOneCardIntegration(t *testing.T) {
 				Answers: []Model.Answer{
 					{
 						Field:        1,
-						Answer:       TESTANSWER1,
+						Answers:      []string{TESTANSWER3},
 						QuestionType: Model.SingleAnswer,
 					},
 				},
@@ -158,7 +158,7 @@ func TestGetCardsByUsernameIntegration(t *testing.T) {
 				{"text", "This is a sample flash card."},
 				{"answers", bson.A{
 					bson.D{
-						{"field", 1},
+						{"field", 2},
 						{"answers", bson.A{TESTANSWER2}},
 						{"questionType", Model.SingleAnswer},
 					},
@@ -174,7 +174,7 @@ func TestGetCardsByUsernameIntegration(t *testing.T) {
 				{"text", "This is a sample flash card."},
 				{"answers", bson.A{
 					bson.D{
-						{"field", 1},
+						{"field", 3},
 						{"answers", bson.A{TESTANSWER3}},
 						{"questionType", Model.SingleAnswer},
 					},
@@ -191,7 +191,6 @@ func TestGetCardsByUsernameIntegration(t *testing.T) {
 			fmt.Sprintf("%s.%s", mt.DB.Name(), TestDBName),
 			mtest.FirstBatch,
 			responses...)
-		fmt.Print(find, "\n")
 		mt.AddMockResponses(find)
 
 		// Call GetCardsByUsername.
@@ -207,13 +206,16 @@ func TestGetCardsByUsernameIntegration(t *testing.T) {
 			assert.Equal(t, val.Text, "This is a sample flash card.")
 			assert.Equal(t, len(val.Answers), 1)
 			if i == 0 {
-				assert.Equal(t, val.Answers[0].Answer, TESTANSWER1)
+				assert.Equal(t, []string{TESTANSWER1}, val.Answers[0].Answers)
+				assert.Equal(t, 1, val.Answers[0].Field)
 			}
 			if i == 1 {
-				assert.Equal(t, val.Answers[0].Answer, TESTANSWER2)
+				assert.Equal(t, []string{TESTANSWER2}, val.Answers[0].Answers)
+				assert.Equal(t, 2, val.Answers[0].Field)
 			}
 			if i == 2 {
-				assert.Equal(t, val.Answers[0].Answer, TESTANSWER3)
+				assert.Equal(t, []string{TESTANSWER3}, val.Answers[0].Answers)
+				assert.Equal(t, 3, val.Answers[0].Field)
 			}
 		}
 	})

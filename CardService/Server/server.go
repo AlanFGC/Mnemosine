@@ -4,6 +4,7 @@ import (
 	"card-service/Model"
 	"card-service/Service"
 	"context"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
@@ -30,7 +31,7 @@ func (g GrpcServer) CreateUserFlashCard(ctx context.Context, in *CreateFlashCard
 	for _, val := range in.Card.Answers {
 		answers = append(answers, Model.Answer{
 			Field:            int(val.Field),
-			Answer:           val.Answers,
+			Answers:          val.Answers,
 			IncorrectAnswers: val.IncorrectAnswers,
 			Explanation:      val.Explanation,
 		})
@@ -111,7 +112,7 @@ func (g GrpcServer) GetCardsByDeckId(ctx context.Context, in *GetCardsByDeckIdRe
 }
 
 func (g GrpcServer) mustEmbedUnimplementedCardServiceServer() {
-	//TODO implement me
+	// No need to implement leave empty
 	panic("implement me")
 }
 
@@ -141,4 +142,50 @@ func protoAnswerToModelAnswer(in []*Answer) (out []Model.Answer) {
 	}
 
 	return answers
+}
+
+func protoDeckToModelDeck(in []*Deck) (out []Model.Deck, err error) {
+
+	var decks []Model.Deck
+
+	for _, deck := range in {
+		var cardIds []primitive.ObjectID
+
+		for _, cardId := range deck.CardIds {
+			cardIdPrimitive, err := primitive.ObjectIDFromHex(cardId)
+			if err != nil {
+				return nil, err
+			}
+
+			cardIds = append(cardIds, cardIdPrimitive)
+		}
+
+		if strings.Compare(deck.DeckId, "") == 0 {
+			newId, err := primitive.ObjectIDFromHex(deck.DeckId)
+			if err != nil {
+				return nil, err
+			}
+
+			decks = append(decks, Model.Deck{
+				ID:          newId,
+				Title:       deck.Title,
+				Username:    deck.Username,
+				CardAuthors: deck.CardAuthors,
+				Topics:      deck.Topics,
+				Cards:       cardIds,
+			})
+		} else {
+
+			decks = append(decks, Model.Deck{
+				Title:       deck.Title,
+				Username:    deck.Username,
+				CardAuthors: deck.CardAuthors,
+				Topics:      deck.Topics,
+				Cards:       cardIds,
+			})
+		}
+
+	}
+
+	return decks, nil
 }

@@ -13,7 +13,7 @@ const (
 
 type Answer struct {
 	Field            int          `bson:"field"`
-	Answer           string       `bson:"answer"`
+	Answers          []string     `bson:"answers"`
 	IncorrectAnswers []string     `bson:"incorrectAnswers, omitempty"`
 	Explanation      string       `bson:"explanation,omitempty"`
 	QuestionType     QuestionType `bson:"questionType"`
