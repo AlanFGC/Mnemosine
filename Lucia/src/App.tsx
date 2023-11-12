@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import FlashCardEditor from './Components/FlashCardEditor/FlashCardEditor';
+import FlashCardEditor from './components/FlashCardEditor/FlashCardEditor';
 
 function App() {
   return (
