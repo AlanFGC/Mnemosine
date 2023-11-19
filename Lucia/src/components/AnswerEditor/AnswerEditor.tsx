@@ -1,19 +1,18 @@
 import { Select, Space } from 'antd';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { QuestionType } from '../../abstractions/flashcardsAbstractions/Answer/Answer';
+import SingleAnswer from './SingleAnswer/SingleAnswer';
 
 interface AnswerEditorProps {
   field: number;
 }
 
-function handleChange(): void {
-
-}
-
 export default function AnswerEditor({ field }: AnswerEditorProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [myValue, setMyValue] = useState(QuestionType.Open);
-  const questionValues = Object.values(QuestionType);
+  const [questionType, setQuestionType] = useState(QuestionType.Open);
+
+  const handleChange = useCallback((value: QuestionType) => {
+    setQuestionType(value);
+  }, [setQuestionType]);
 
   return (
     <div>
@@ -21,17 +20,34 @@ export default function AnswerEditor({ field }: AnswerEditorProps) {
         <span>{field}</span>
         <Space wrap />
         <Select
-          defaultValue="Question type"
+          defaultValue={null}
           style={{ width: 120 }}
           onChange={handleChange}
           options={[
+
             {
-              ...questionValues.map((questionType: QuestionType) => (
-                { value: questionType, label: questionType, disabled: false }
-              )),
+              value: QuestionType.MultipleChoice,
+              label: QuestionType.MultipleChoice,
+              disabled: false,
             },
+            {
+              value: QuestionType.SingleAnswer,
+              label: QuestionType.SingleAnswer,
+              disabled: false,
+            },
+            {
+              value: QuestionType.Open,
+              label: QuestionType.Open,
+              disabled: false,
+            },
+
           ]}
         />
+      </div>
+      <div>
+        {questionType === QuestionType.Open && <h1>Open answer</h1>}
+        {questionType === QuestionType.MultipleChoice && <h1>Multiple Choice Answer answer</h1>}
+        {questionType === QuestionType.SingleAnswer && <SingleAnswer />}
       </div>
     </div>
 
