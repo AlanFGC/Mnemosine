@@ -1,11 +1,13 @@
+import Input from 'antd/es/input/Input';
+
 export default function SingleAnswer(): JSX.Element {
   return (
     <div>
       <h1>Unique answer:</h1>
       <br />
-      <input type="text" name="answer" />
+      <Input name="answer" />
       <span>Explanation:</span>
-      <input type="text" name="explanation" />
+      <Input name="explanation" />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from 'react';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 
 type IncorrectAnswer = {
   id: number;
@@ -31,13 +32,13 @@ export default function MultipleChoice(): JSX.Element {
     <div>
       <h1>Multiple Choice:</h1>
       <br />
-      <span>Answers:</span>
-      <input type="text" name="answer" />
+      <span>Answer:</span>
+      <Input type="text" name="answer" />
       <span>Incorrect choices:</span>
 
       <div>
         <Button onClick={addIncorrectAnswer}>Add</Button>
-        <input type="text" name="incorrectAnswer" value={newIncorrectAnswer} onChange={onChangeIncorrectAnswer} />
+        <Input type="text" name="incorrectAnswer" value={newIncorrectAnswer} onChange={onChangeIncorrectAnswer} />
       </div>
 
       <ul>
@@ -50,9 +51,8 @@ export default function MultipleChoice(): JSX.Element {
         ))}
 
       </ul>
-      <input type="text" name="answer" />
       <span>Explanation:</span>
-      <input type="text" name="explanation" />
+      <TextArea rows={4} placeholder="Addiontal information here" />
     </div>
   );
 }

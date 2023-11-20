@@ -2,6 +2,8 @@ import { Select, Space } from 'antd';
 import { useCallback, useState } from 'react';
 import { QuestionType } from '../../abstractions/flashcardsAbstractions/Answer/Answer';
 import SingleAnswer from './SingleAnswer/SingleAnswer';
+import MultipleChoice from './MultipleChoice/MultipleChoice';
+import OpenAnswer from './OpenAnswer/OpenAnswer';
 
 interface AnswerEditorProps {
   field: number;
@@ -21,7 +23,7 @@ export default function AnswerEditor({ field }: AnswerEditorProps) {
         <Space wrap />
         <Select
           defaultValue={null}
-          style={{ width: 120 }}
+          style={{}}
           onChange={handleChange}
           options={[
 
@@ -45,8 +47,8 @@ export default function AnswerEditor({ field }: AnswerEditorProps) {
         />
       </div>
       <div>
-        {questionType === QuestionType.Open && <h1>Open answer</h1>}
-        {questionType === QuestionType.MultipleChoice && <h1>Multiple Choice Answer answer</h1>}
+        {questionType === QuestionType.Open && <OpenAnswer />}
+        {questionType === QuestionType.MultipleChoice && <MultipleChoice />}
         {questionType === QuestionType.SingleAnswer && <SingleAnswer />}
       </div>
     </div>

@@ -7,7 +7,6 @@ function App() {
     <div className="App">
       <h1>Welcome to Mnesomine</h1>
       <FlashCardEditor />
-      <Button type="primary">Button</Button>
       <AnswerEditor field={0} />
     </div>
   );
