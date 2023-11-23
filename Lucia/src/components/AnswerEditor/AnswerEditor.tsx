@@ -1,6 +1,6 @@
 import { Select, Space } from 'antd';
 import { useCallback, useState } from 'react';
-import { QuestionType } from '../../abstractions/flashcardsAbstractions/Answer/Answer';
+import { QuestionType } from '../../Data/FlashcardData/Answer/Answer';
 import SingleAnswer from './SingleAnswer/SingleAnswer';
 import MultipleChoice from './MultipleChoice/MultipleChoice';
 import OpenAnswer from './OpenAnswer/OpenAnswer';
