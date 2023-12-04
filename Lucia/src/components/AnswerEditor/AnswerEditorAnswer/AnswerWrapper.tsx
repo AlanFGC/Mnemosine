@@ -1,17 +1,15 @@
 import { Select, Space } from 'antd';
 import { useCallback, useState } from 'react';
-import { Answer, QuestionType } from '../../Data/FlashcardData/Answer/Answer';
-import MultipleChoice from './AnswerEditorAnswer/MultipleChoice/MultipleChoice';
-import OpenAnswer from './AnswerEditorAnswer/OpenAnswer/OpenAnswer';
-import SingleAnswer from './AnswerEditorAnswer/SingleAnswer/SingleAnswer';
+import { QuestionType } from '../../../Data/FlashcardData/Answer/Answer';
+import SingleAnswer from './SingleAnswer/SingleAnswer';
+import MultipleChoice from './MultipleChoice/MultipleChoice';
+import OpenAnswer from './OpenAnswer/OpenAnswer';
 
 interface AnswerEditorProps {
-  prompt: string;
-  answerTokens: Map<number, Answer>;
-  setAnswers: (token: number, newAnswer: Answer) => void;
+  field: number;
 }
 
-export default function AnswerEditor({ prompt, answerTokens, setAnswers }: AnswerEditorProps) {
+export default function AnswerWrapper({ field }: AnswerEditorProps) {
   const [questionType, setQuestionType] = useState(QuestionType.Open);
 
   const handleChange = useCallback((value: QuestionType) => {
@@ -21,7 +19,7 @@ export default function AnswerEditor({ prompt, answerTokens, setAnswers }: Answe
   return (
     <div>
       <div className="topbar">
-        <span>{prompt}</span>
+        <span>{field}</span>
         <Space wrap />
         <Select
           defaultValue={null}

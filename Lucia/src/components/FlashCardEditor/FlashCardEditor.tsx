@@ -1,50 +1,55 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
+import { Answer, AnswerToken } from '../../Data/FlashcardData/Answer/Answer';
+import AnswerEditor from '../AnswerEditor/AnswerEditor';
+import FlashCardContentEditor from '../FlashCardContentEditor/FlashCardContentEditor';
 
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+function FlashCardEditor() {
+  // Raw input
+  const [, setCardContent] = useState('');
+  // answer tokens
+  const [answerMap, setAnswerMap] = useState < new Map<number, Answer>(new Map());
 
-// Lexical React plugins are React components, which makes them
-// highly composable. Furthermore, you can lazy load plugins if
-// desired, so you don't pay the cost for plugins until you
-// actually use them.
-function MyCustomAutoFocusPlugin() {
-  const [editor] = useLexicalComposerContext();
+  const handleEditorContent = (content: string) => {
+    setCardContent(content);
+  };
 
-  useEffect(() => {
-    // Focus the editor when the effect fires!
-    editor.focus();
-  }, [editor]);
+  /*
+  Set token for update on start
+  const setToken = (token: number, answer: Answer) => {
+    setAnswerMap(new Map(answerMap.set(token, answer)));
+  };
+  */
 
-  return null;
-}
+  const addToken = (token: number) => {
+    setAnswerMap(new Map(answerMap.set(token, null)));
+  };
 
-// Catch any errors that occur during Lexical updates and log them
-// or throw them as needed. If you don't throw them, Lexical will
-// try to recover gracefully without losing user data.
-function onError(error: Error) {
-  // eslint-disable-next-line no-console
-  console.error(error);
-}
+  const removeToken = (key: number) => {
+    const newTokens = new Set(answerMap);
+    newTokens.delete(key);
+    setAnswerMap(newTokens);
+  };
 
-export default function FlashCardEditor() {
-  const initialConfig = {
-    namespace: 'MyEditor',
-    onError,
+  const editTokenKey = (key: number, newAnswer: Answer) => {
+    if (answerMap.has(key)) {
+      setAnswerMap(new Map(answerMap.set(key, newAnswer)));
+    }
   };
 
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <RichTextPlugin
-        contentEditable={<ContentEditable />}
-        placeholder={<h3>Enter some text...</h3>}
-        ErrorBoundary={LexicalErrorBoundary}
+    <div>
+      <FlashCardContentEditor
+        setCardContent={handleEditorContent}
+        addAnswerToken={addToken}
+        removeAnswerToken={removeToken}
       />
-      <HistoryPlugin />
-      <MyCustomAutoFocusPlugin />
-    </LexicalComposer>
+      <AnswerEditor
+        prompt="Add your answers here :)"
+        answerTokens={answerMap}
+        setAnswers={editTokenKey}
+      />
+    </div>
   );
 }
+
+export default FlashCardEditor;

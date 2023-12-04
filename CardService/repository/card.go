@@ -66,7 +66,7 @@ func InsertCards(ctx context.Context, db *mongo.Database, cards []Model.UserFlas
 	if err != nil {
 		log.Fatal("Couldn't insert one flashcard")
 	}
-	result := []string{}
+	var result []string
 
 	for _, value := range res.InsertedIDs {
 		if ID, ok := value.(primitive.ObjectID); ok {
