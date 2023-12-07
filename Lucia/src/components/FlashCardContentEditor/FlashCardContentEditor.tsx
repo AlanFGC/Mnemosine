@@ -47,7 +47,7 @@ function FlashCardContentEditor(
     <LexicalComposer initialConfig={initialConfig}>
       <RichTextPlugin
         contentEditable={<ContentEditable />}
-        placeholder={<h3>Enter some text...</h3>}
+        placeholder={<h3 className="placeholder">Enter some text...</h3>}
         ErrorBoundary={LexicalErrorBoundary}
       />
       <HistoryPlugin />

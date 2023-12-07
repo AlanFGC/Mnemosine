@@ -7,8 +7,7 @@ function FlashCardEditor() {
   // Raw input
   const [, setCardContent] = useState('');
   // answer tokens
-  const [answerMap, setAnswerMap] = useState < new Map<number, Answer>(new Map());
-
+  const [answerMap, setAnswerMap] = useState <Map<number, Answer>>(new Map());
   const handleEditorContent = (content: string) => {
     setCardContent(content);
   };
@@ -20,12 +19,12 @@ function FlashCardEditor() {
   };
   */
 
-  const addToken = (token: number) => {
-    setAnswerMap(new Map(answerMap.set(token, null)));
+  const addToken = (token: number, anwser: Answer) => {
+    setAnswerMap(new Map(answerMap.set(token, anwser)));
   };
 
   const removeToken = (key: number) => {
-    const newTokens = new Set(answerMap);
+    const newTokens = new Map(answerMap);
     newTokens.delete(key);
     setAnswerMap(newTokens);
   };

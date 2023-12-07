@@ -1,6 +1,10 @@
 import TextArea from 'antd/es/input/TextArea';
 
-export default function OpenAnswer(): JSX.Element {
+interface OpenAnswerProps {
+  handleAnswerChange: () => void;
+}
+
+export default function OpenAnswer( { handleAnswerChange }: OpenAnswerProps) {
   return (
     <div>
       <h1>Open Answer:</h1>

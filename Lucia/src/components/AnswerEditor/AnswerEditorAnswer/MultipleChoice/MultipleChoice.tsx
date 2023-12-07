@@ -2,12 +2,16 @@ import { ChangeEvent, useState } from 'react';
 import { Button, Input } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
+interface MultipleChoiceProps {
+  handleAnswerChange: () => void;
+}
+
 type IncorrectAnswer = {
   id: number;
   text: string;
 };
 
-export default function MultipleChoice(): JSX.Element {
+export default function MultipleChoice( { handleAnswerChange }: MultipleChoiceProps) {
   const [incorrectAnswerList, setIncorrectAnswersList] = useState<IncorrectAnswer[]>([]);
   const [newIncorrectAnswer, setNewIncorrectAnswer] = useState('');
 

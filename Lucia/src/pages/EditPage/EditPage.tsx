@@ -1,4 +1,4 @@
-import FlashCardEditor from '../../components/FlashCardContentEditor/FlashCardContentEditor';
+import FlashCardEditor from '../../components/FlashCardEditor/FlashCardEditor';
 
 export default function EditPage() {
   return (

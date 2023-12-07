@@ -1,6 +1,11 @@
 import Input from 'antd/es/input/Input';
 
-export default function SingleAnswer(): JSX.Element {
+interface SingleChoiceAnswer {
+  handleAnswerChange: () => void;
+}
+
+
+export default function SingleAnswer( { handleAnswerChange }: SingleChoiceAnswer) {
   return (
     <div>
       <h1>Unique answer:</h1>
