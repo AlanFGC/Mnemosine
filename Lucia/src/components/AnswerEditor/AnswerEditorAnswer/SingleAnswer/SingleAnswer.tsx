@@ -1,18 +1,18 @@
-import Input from 'antd/es/input/Input';
+import TextArea from 'antd/es/input/TextArea';
+import { ChangeEvent } from 'react';
 
 interface SingleChoiceAnswer {
-  handleAnswerChange: () => void;
+  handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-
-export default function SingleAnswer( { handleAnswerChange }: SingleChoiceAnswer) {
+export default function SingleAnswer({ handleInputChange }: SingleChoiceAnswer) {
   return (
     <div>
       <h1>Unique answer:</h1>
       <br />
-      <Input name="answer" />
+      <TextArea name="answer" onChange={handleInputChange} />
       <span>Explanation:</span>
-      <Input name="explanation" />
+      <TextArea name="explanation" onChange={handleInputChange} />
     </div>
   );
 }

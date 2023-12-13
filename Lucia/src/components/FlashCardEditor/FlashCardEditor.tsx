@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Answer, AnswerToken } from '../../Data/FlashcardData/Answer/Answer';
+import { useCallback, useState } from 'react';
+import { Answer } from '../../Data/FlashcardData/Answer/Answer';
 import AnswerEditor from '../AnswerEditor/AnswerEditor';
 import FlashCardContentEditor from '../FlashCardContentEditor/FlashCardContentEditor';
 
@@ -12,13 +12,6 @@ function FlashCardEditor() {
     setCardContent(content);
   };
 
-  /*
-  Set token for update on start
-  const setToken = (token: number, answer: Answer) => {
-    setAnswerMap(new Map(answerMap.set(token, answer)));
-  };
-  */
-
   const addToken = (token: number, anwser: Answer) => {
     setAnswerMap(new Map(answerMap.set(token, anwser)));
   };
@@ -29,11 +22,11 @@ function FlashCardEditor() {
     setAnswerMap(newTokens);
   };
 
-  const editTokenKey = (key: number, newAnswer: Answer) => {
+  const editTokenValue = useCallback((key: number, newAnswer: Answer) => {
     if (answerMap.has(key)) {
       setAnswerMap(new Map(answerMap.set(key, newAnswer)));
     }
-  };
+  }, [answerMap]);
 
   return (
     <div>
@@ -45,7 +38,7 @@ function FlashCardEditor() {
       <AnswerEditor
         prompt="Add your answers here :)"
         answerTokens={answerMap}
-        setAnswers={editTokenKey}
+        editTokenValue={editTokenValue}
       />
     </div>
   );

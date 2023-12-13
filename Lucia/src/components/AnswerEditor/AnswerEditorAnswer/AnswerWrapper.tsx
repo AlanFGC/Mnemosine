@@ -1,5 +1,5 @@
 import { Select, Space } from 'antd';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Answer, QuestionType } from '../../../Data/FlashcardData/Answer/Answer';
 import SingleAnswer from './SingleAnswer/SingleAnswer';
 import MultipleChoice from './MultipleChoice/MultipleChoice';
@@ -7,29 +7,25 @@ import OpenAnswer from './OpenAnswer/OpenAnswer';
 
 interface AnswerEditorProps {
   answerInit: Answer;
-  setGlobalAnswer: (token: number, newAnswer: Answer) => void;
+  updateAnswer: (field: number, propertyName: string, newValue: string) => void;
 }
 
-export default function AnswerWrapper({ answerInit, setGlobalAnswer }: AnswerEditorProps) {
-  const [questionType, setQuestionType] = useState(QuestionType.Open);
+export default function AnswerWrapper({ answerInit, updateAnswer }: AnswerEditorProps) {
+  const [questionType, setQuestionType] = useState(answerInit.questionType);
 
-  const [answer, setAnswer] = useState({ ...answerInit });
-
-  const handleQuestionChange = useCallback((value: QuestionType) => {
+  const handleQuestionChange = (value: QuestionType) => {
     setQuestionType(value);
-    setGlobalAnswer(answer.field, { ...answer, questionType: value });
-  }, [setQuestionType, answer]);
+    updateAnswer(answerInit.field, 'questionType', value);
+  };
 
-
-  const handleAnswerChange = useCallback((newAnswer: Answer) => {
-    setAnswer(newAnswer);
-    setGlobalAnswer(answer.field, answer);
-  }, [setAnswer, setGlobalAnswer]);
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    updateAnswer(answerInit.field, name, value);
+  };
 
   return (
     <div>
       <div className="topbar">
-        <span>{answer.field}</span>
         <Space wrap />
         <Select
           defaultValue={null}
@@ -57,9 +53,12 @@ export default function AnswerWrapper({ answerInit, setGlobalAnswer }: AnswerEdi
         />
       </div>
       <div>
-        {questionType === QuestionType.Open && <OpenAnswer onChange={ handleAnswerChange } />}
-        {questionType === QuestionType.MultipleChoice && <MultipleChoice onChange={ handleAnswerChange } />}
-        {questionType === QuestionType.SingleAnswer && <SingleAnswer onChange={ handleAnswerChange } />}
+        {questionType === QuestionType.Open
+         && <OpenAnswer handleInputChange={handleInputChange} />}
+        {/* {questionType === QuestionType.MultipleChoice
+        && <MultipleChoice handleInputChange={handleInputChange} />} */}
+        {questionType === QuestionType.SingleAnswer
+         && <SingleAnswer handleInputChange={handleInputChange} />}
       </div>
     </div>
 

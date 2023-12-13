@@ -1,9 +1,9 @@
 import { ChangeEvent, useState } from 'react';
-import { Button, Input } from 'antd';
+import { Button } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
 interface MultipleChoiceProps {
-  handleAnswerChange: () => void;
+  handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 type IncorrectAnswer = {
@@ -11,7 +11,7 @@ type IncorrectAnswer = {
   text: string;
 };
 
-export default function MultipleChoice( { handleAnswerChange }: MultipleChoiceProps) {
+export default function MultipleChoice({ handleInputChange }: MultipleChoiceProps) {
   const [incorrectAnswerList, setIncorrectAnswersList] = useState<IncorrectAnswer[]>([]);
   const [newIncorrectAnswer, setNewIncorrectAnswer] = useState('');
 
@@ -37,12 +37,12 @@ export default function MultipleChoice( { handleAnswerChange }: MultipleChoicePr
       <h1>Multiple Choice:</h1>
       <br />
       <span>Answer:</span>
-      <Input type="text" name="answer" />
+      <TextArea name="answer" onChange={handleInputChange} />
       <span>Incorrect choices:</span>
 
       <div>
         <Button onClick={addIncorrectAnswer}>Add</Button>
-        <Input type="text" name="incorrectAnswer" value={newIncorrectAnswer} onChange={onChangeIncorrectAnswer} />
+        <TextArea name="incorrectAnswer" value={newIncorrectAnswer} onChange={onChangeIncorrectAnswer} />
       </div>
 
       <ul>
@@ -56,7 +56,7 @@ export default function MultipleChoice( { handleAnswerChange }: MultipleChoicePr
 
       </ul>
       <span>Explanation:</span>
-      <TextArea rows={4} placeholder="Addiontal information here" />
+      <TextArea rows={4} placeholder="Addiontal information here" name="someattribute" onChange={handleAnswerChange} />
     </div>
   );
 }
