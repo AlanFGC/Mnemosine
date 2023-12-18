@@ -1,6 +1,8 @@
 import { QuestionMarkCircleIcon } from '@heroicons/react/20/solid';
 
-export const eventTypes = {
+export type EventType = string;
+
+export const eventTypes: { [key: string]: EventType } = {
   paragraph: 'paragraph',
   h1: 'h1',
   h2: 'h2',
@@ -22,7 +24,17 @@ export const eventTypes = {
   insertToken: 'insertToken',
 };
 
-const pluginsList = [
+export interface FlashContEditorPlugin {
+  id: number,
+  Icon: React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> &
+  { title?: string, titleId?: string } &
+  React.RefAttributes<SVGSVGElement>
+  >,
+  event: EventType,
+}
+
+export const pluginsList: FlashContEditorPlugin[] = [
   // Create AnswerToken
   {
     id: 1,
