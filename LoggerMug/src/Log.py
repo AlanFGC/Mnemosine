@@ -10,7 +10,7 @@ class LOGTYPE(Enum):
   FATAL = 'FATAL',
 
 class Log:
-  def __init__(self, timestamp=0, logType=LOGTYPE.INFO, origin='', info='', session=0):
+  def __init__(self, timestamp=0, logType=None, origin='', info='', session=0):
     self.timestamp = datetime.timestamp(datetime.now()) if not timestamp else timestamp
     self.logType = logType
     self.origin = origin

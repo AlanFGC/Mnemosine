@@ -22,7 +22,8 @@ class SQLiteDB():
             CREATE TABLE {LOG_TABLE} (
                 {ID_COL} INTEGER PRIMARY KEY,
                 {ORIGIN_COL} VARCHAR(255),
-                {LOGTYPE_COL} VARCHAR(5) CHECK(logType IN ('{LOGTYPE.TRACE.value[0]}', '{LOGTYPE.DEBUG.value[0]}', '{LOGTYPE.INFO.value[0]}', '{LOGTYPE.WARN.value[0]}', '{LOGTYPE.ERROR.value[0]}',
+                {LOGTYPE_COL} VARCHAR(5) CHECK(logType IN
+                ('{LOGTYPE.TRACE.value[0]}', '{LOGTYPE.DEBUG.value[0]}', '{LOGTYPE.INFO.value[0]}', '{LOGTYPE.WARN.value[0]}', '{LOGTYPE.ERROR.value[0]}',
                 '{LOGTYPE.FATAL.value[0]}')),
                 {TIMESTAMP_COL} DATETIME DEFAULT CURRENT_TIMESTAMP,
                 {INFO_COL} VARCHAR(255),
@@ -37,19 +38,21 @@ class SQLiteDB():
     try:
       cursor = self.connection.cursor()
       q = pypika.Query.into(LOG_TABLE)\
-        .columns(LOGTYPE_COL, LOGTYPE_COL, TIMESTAMP_COL, INFO_COL, SESSION_COL)\
+        .columns(ORIGIN_COL, LOGTYPE_COL, TIMESTAMP_COL, INFO_COL, SESSION_COL)\
         .insert(log.origin, log.logType.value[0], log.timestamp, log.info, log.session)
       cursor.execute(str(q))
       self.connection.commit()
     except Exception as e:
       print(f"Failed to insert: {e}")
-    finally:
       cursor.close()
+      raise ValueError(f"Incorrect parameters: {e}")
 
-  def getLastNEvents(self, n, page):
+    cursor.close()
+
+  def getLastNEvents(self, offset, limit):
     try:
         cursor = self.connection.cursor()
-        q = pypika.Query.from_(LOG_TABLE).select(ID_COL, ORIGIN_COL, LOGTYPE_COL, TIMESTAMP_COL, INFO_COL, SESSION_COL)
+        q = pypika.Query.from_(LOG_TABLE).select(ID_COL, ORIGIN_COL, LOGTYPE_COL, TIMESTAMP_COL, INFO_COL, SESSION_COL).offset(offset).limit(limit)
         c = cursor.execute(str(q))
         res = []
         for row in c:

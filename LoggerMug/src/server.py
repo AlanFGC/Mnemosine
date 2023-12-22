@@ -33,6 +33,18 @@ def postEvent():
 
 @app.route('/getLogs', methods=['GET'])
 def getEvents():
-  return db.getLastNEvents(32, 2)
+  try:
+    page = int(request.args.get('page'))
+  except KeyError or ValueError as e:
+    return '<p> Invalid parameters </p>'
 
+  queryTuples = db.getLastNEvents(10 * page, 10).split("), (")
+  queryTuples[0] = queryTuples[0][2:]
+  queryTuples[-1]= queryTuples[-1][:len(queryTuples[-1])-2]
 
+  resp = ['<ol>']
+  for log in queryTuples:
+    resp.append(f"<li>{log}</li>")
+  resp.append('</ol>')
+
+  return '\n'.join(resp)
