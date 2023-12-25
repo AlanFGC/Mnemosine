@@ -3,7 +3,13 @@ import { Answer } from '../../Data/FlashcardData/Answer/Answer';
 import AnswerEditor from '../AnswerEditor/AnswerEditor';
 import FlashCardContentEditor from '../FlashCardContentEditor/FlashCardContentEditor';
 
-function FlashCardEditor() {
+type FlashCardEditorProps = {
+  flashcardID: string | null;
+};
+
+// TODO set up this line to load a flashcard from the backend given and id.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function FlashCardEditor({ flashcardID }: FlashCardEditorProps) {
   // Raw input
   const [, setCardContent] = useState('');
   // answer tokens

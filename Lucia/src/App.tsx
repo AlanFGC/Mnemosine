@@ -7,7 +7,8 @@ function App() {
       <h1>Welcome to Mnesomine</h1>
       <BrowserRouter>
         <Routes>
-          <Route path="/editor" element={<EditPage />} />
+          <Route path="/editor/" element={<EditPage />} />
+          <Route path="/editor/:id" element={<EditPage />} />
         </Routes>
       </BrowserRouter>
     </div>
