@@ -17,3 +17,10 @@ export enum QuestionType {
   Undefined = 'undefined',
 }
 
+export const DefaultAnswer: Answer = {
+  field: 0,
+  answers: [],
+  incorrectAnswers: [],
+  explanation: '',
+  questionType: QuestionType.Open,
+};

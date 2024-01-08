@@ -1,9 +1,10 @@
 import { ChangeEvent, useState } from 'react';
 import { Button } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { ANSWERS, EXPLANATION, INCORRECTANSWERS } from '../dtypes';
 
 interface MultipleChoiceProps {
-  handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
+  handleInputChange: ((name: string, value: string[]) => void);
 }
 
 type IncorrectAnswer = {
@@ -26,10 +27,12 @@ export default function MultipleChoice({ handleInputChange }: MultipleChoiceProp
     const newAnswer: IncorrectAnswer = { id: Date.now(), text: newIncorrectAnswer };
     setIncorrectAnswersList([...incorrectAnswerList, newAnswer]);
     setNewIncorrectAnswer('');
+    handleInputChange(INCORRECTANSWERS, incorrectAnswerList.map((a) => a.text));
   };
 
   const removeItem = (id: number) => {
     setIncorrectAnswersList(incorrectAnswerList.filter((answer) => answer.id !== id));
+    handleInputChange(INCORRECTANSWERS, incorrectAnswerList.map((a) => a.text));
   };
 
   return (
@@ -37,26 +40,29 @@ export default function MultipleChoice({ handleInputChange }: MultipleChoiceProp
       <h1>Multiple Choice:</h1>
       <br />
       <span>Answer:</span>
-      <TextArea name="answer" onChange={handleInputChange} />
+      <TextArea
+        name={ANSWERS}
+        onChange={(e) => handleInputChange(e.target.name, [e.target.value])}
+      />
       <span>Incorrect choices:</span>
 
       <div>
         <Button onClick={addIncorrectAnswer}>Add</Button>
-        <TextArea name="incorrectAnswer" value={newIncorrectAnswer} onChange={onChangeIncorrectAnswer} />
+        <input type="text" name={INCORRECTANSWERS} value={newIncorrectAnswer} onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeIncorrectAnswer(e)} />
       </div>
 
       <ul>
 
         {incorrectAnswerList.map((answer: IncorrectAnswer) => (
-          <>
-            <li key={answer.id}>{answer.text}</li>
+          <li key={answer.id}>
+            {answer.text}
             <Button onClick={() => removeItem(answer.id)}>X</Button>
-          </>
+          </li>
         ))}
 
       </ul>
       <span>Explanation:</span>
-      <TextArea rows={4} placeholder="Addiontal information here" name="someattribute" onChange={handleAnswerChange} />
+      <TextArea rows={4} placeholder="Addiontal information here" name={EXPLANATION} onChange={(e) => handleInputChange(e.target.name, [e.target.value])} />
     </div>
   );
 }

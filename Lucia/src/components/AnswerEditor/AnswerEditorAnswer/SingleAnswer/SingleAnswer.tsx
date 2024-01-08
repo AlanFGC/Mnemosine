@@ -1,8 +1,8 @@
 import TextArea from 'antd/es/input/TextArea';
-import { ChangeEvent } from 'react';
+import { ANSWERS, EXPLANATION } from '../dtypes';
 
 interface SingleChoiceAnswer {
-  handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
+  handleInputChange: ((name: string, value: string[]) => void);
 }
 
 export default function SingleAnswer({ handleInputChange }: SingleChoiceAnswer) {
@@ -10,9 +10,15 @@ export default function SingleAnswer({ handleInputChange }: SingleChoiceAnswer) 
     <div>
       <h1>Unique answer:</h1>
       <br />
-      <TextArea name="answer" onChange={handleInputChange} />
+      <TextArea
+        name={ANSWERS}
+        onChange={(e) => handleInputChange(e.target.name, [e.target.value])}
+      />
       <span>Explanation:</span>
-      <TextArea name="explanation" onChange={handleInputChange} />
+      <TextArea
+        name={EXPLANATION}
+        onChange={(e) => handleInputChange(e.target.name, [e.target.value])}
+      />
     </div>
   );
 }

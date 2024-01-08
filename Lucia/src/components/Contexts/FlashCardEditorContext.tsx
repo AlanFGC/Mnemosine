@@ -8,7 +8,7 @@ type ContextEditorState = {
   dispatch: Dispatch<FlashCardEditorActions>;
 };
 
-const FlashCardEditorContext = createContext<ContextEditorState>(
+export const FlashCardEditorContext = createContext<ContextEditorState>(
   { state: InitialState } as ContextEditorState,
 );
 
@@ -18,7 +18,9 @@ function FlashCardContextProvider({ children, propEditorState = InitialState }: 
 >) {
   const [flashCardState, dispatch] = useReducer(FlashCardReducer, propEditorState);
 
-  const memoizedContextValue = useMemo(
+  const memoizedContextValue = useMemo<{
+    state: EditorState; dispatch: Dispatch<FlashCardEditorActions>,
+  }>(
     () => ({ state: flashCardState, dispatch }),
     [flashCardState, dispatch],
   );

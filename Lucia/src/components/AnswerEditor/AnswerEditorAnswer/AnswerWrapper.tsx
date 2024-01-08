@@ -1,26 +1,39 @@
-import { Select, Space } from 'antd';
+import { Button, Select, Space } from 'antd';
 import { useState } from 'react';
 import { Answer, QuestionType } from '../../../Data/FlashcardData/Answer/Answer';
 import SingleAnswer from './SingleAnswer/SingleAnswer';
 import MultipleChoice from './MultipleChoice/MultipleChoice';
 import OpenAnswer from './OpenAnswer/OpenAnswer';
+import { ANSWERS, EXPLANATION, INCORRECTANSWERS } from './dtypes';
 
 interface AnswerEditorProps {
   answerInit: Answer;
-  updateAnswer: (field: number, propertyName: string, newValue: string) => void;
 }
 
-export default function AnswerWrapper({ answerInit, updateAnswer }: AnswerEditorProps) {
-  const [questionType, setQuestionType] = useState(answerInit.questionType);
+export default function AnswerWrapper({ answerInit }: AnswerEditorProps) {
+  const [answer, setAnswer] = useState<Answer>(answerInit);
 
   const handleQuestionChange = (value: QuestionType) => {
-    setQuestionType(value);
-    updateAnswer(answerInit.field, 'questionType', value);
+    setAnswer({ ...answer, questionType: value });
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = event.target;
-    updateAnswer(answerInit.field, name, value);
+  const handleInputChange = (name: string, value:string[]) => {
+    switch (name) {
+      case EXPLANATION:
+        setAnswer({ ...answer, explanation: value[0] });
+        break;
+      case ANSWERS:
+        setAnswer({ ...answer, answers: value });
+        break;
+      case INCORRECTANSWERS:
+        setAnswer({ ...answer, incorrectAnswers: value });
+        break;
+      default:
+        throw new Error(`Failed to parse input change on answer ${name}`);
+    }
+  };
+
+  const onSave = () => {
   };
 
   return (
@@ -51,13 +64,14 @@ export default function AnswerWrapper({ answerInit, updateAnswer }: AnswerEditor
 
           ]}
         />
+        <Button onClick={onSave}>Save</Button>
       </div>
       <div>
-        {questionType === QuestionType.Open
+        {answer.questionType === QuestionType.Open
          && <OpenAnswer handleInputChange={handleInputChange} />}
-        {/* {questionType === QuestionType.MultipleChoice
-        && <MultipleChoice handleInputChange={handleInputChange} />} */}
-        {questionType === QuestionType.SingleAnswer
+        {answer.questionType === QuestionType.MultipleChoice
+        && <MultipleChoice handleInputChange={handleInputChange} />}
+        {answer.questionType === QuestionType.SingleAnswer
          && <SingleAnswer handleInputChange={handleInputChange} />}
       </div>
     </div>

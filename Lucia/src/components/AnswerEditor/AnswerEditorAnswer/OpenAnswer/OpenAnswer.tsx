@@ -1,8 +1,8 @@
 import TextArea from 'antd/es/input/TextArea';
-import { ChangeEvent } from 'react';
+import { ANSWERS, EXPLANATION } from '../dtypes';
 
 interface OpenAnswerProps {
-  handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
+  handleInputChange: ((name: string, value: string[]) => void);
 }
 
 export default function OpenAnswer({ handleInputChange }: OpenAnswerProps) {
@@ -10,9 +10,15 @@ export default function OpenAnswer({ handleInputChange }: OpenAnswerProps) {
     <div>
       <h1>Open Answer:</h1>
       <span>Answer:</span>
-      <TextArea name="answer" onChange={handleInputChange} />
+      <TextArea
+        name={ANSWERS}
+        onChange={(e) => handleInputChange(e.target.name, [e.target.value])}
+      />
       <span>Explanation:</span>
-      <TextArea name="explanation" onChange={handleInputChange} />
+      <TextArea
+        name={EXPLANATION}
+        onChange={(e) => handleInputChange(e.target.name, [e.target.value])}
+      />
     </div>
   );
 }
