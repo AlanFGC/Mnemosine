@@ -13,22 +13,6 @@ type AnswerEditorProps = {
 export default function AnswerEditor({ prompt }: AnswerEditorProps) {
   const { state: editorState, dispatch } = useContext(FlashCardEditorContext);
 
-  /*   const isValidKey = (key: string) => VALIDKEYS.includes(key);
-
-  const updateAnswer = (field: number, propertyName: string, newValue: string) => {
-    const oldAnswer = editorState.answerMap.get(field);
-    if (oldAnswer && isValidKey(propertyName)) {
-      const updatedAnswer: Answer = { ...oldAnswer, [propertyName]: newValue };
-      dispatch({
-        type: 'updateToken',
-        payload: {
-          key: field,
-          answer: updatedAnswer,
-        },
-      });
-    }
-  }; */
-
   const addToken = () => {
     const newKey = Math.max(...editorState.answerMap.keys(), 0) + 1;
     dispatch({

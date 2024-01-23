@@ -6,6 +6,8 @@ type LocalStoragePluginProps = {
   namespace: string;
 };
 
+const DEBOUNCETIME = 300;
+
 function LocalStoragePlugin({ namespace }: LocalStoragePluginProps): React.ReactNode {
   const [editor] = useLexicalComposerContext();
 
@@ -18,7 +20,7 @@ function LocalStoragePlugin({ namespace }: LocalStoragePluginProps): React.React
   );
 
   // Debounce to save content to local storage
-  const debounceFunc = Debounce(saveContent, 300);
+  const debounceFunc = Debounce(saveContent, DEBOUNCETIME);
 
   // trigger debounce whenever the tree or the content changes.
   useEffect(() => (

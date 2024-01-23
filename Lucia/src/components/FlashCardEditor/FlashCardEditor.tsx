@@ -3,6 +3,7 @@ import Loader from '../UtilityUIcomponents/Loader/Loader';
 import FlashCardContextProvider from '../Contexts/FlashCardEditorContext';
 import { EditorState } from '../Reducers/FlashcardEditorReducer';
 import AnswerEditor from '../AnswerEditor/AnswerEditor';
+import FlashCardContentEditor from '../FlashCardContentEditor/FlashCardContentEditor';
 
 type FlashCardEditorProps = {
   flashcardID: string | undefined;
@@ -23,10 +24,14 @@ function FlashCardEditor({ flashcardID = undefined }: FlashCardEditorProps) {
     },
     [flashcardID, isLoading, setLoading],
   );
+
+  const contentEditorId = flashcardID ? `FLSCRDEDIT:${flashcardID}` : 'FLSCRDEDIT:NEWFLASH';
+
   return (
     isLoading ? <Loader />
       : (
         <FlashCardContextProvider propEditorState={fetchedState}>
+          <FlashCardContentEditor id={contentEditorId} />
           <AnswerEditor prompt="Type your answer" />
         </FlashCardContextProvider>
       )
