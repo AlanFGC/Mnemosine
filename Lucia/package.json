@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
     "@heroicons/react": "^2.0.18",
     "@lexical/react": "^0.12.2",
     "antd": "^5.10.1",
+    "auth0": "^4.3.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "lexical": "^0.12.2",
     "localforage": "^1.10.0",
