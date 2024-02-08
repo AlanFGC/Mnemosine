@@ -4,6 +4,7 @@ import FlashCardContextProvider from '../Contexts/FlashCardEditorContext';
 import { EditorState } from '../Reducers/FlashcardEditorReducer';
 import AnswerEditor from '../AnswerEditor/AnswerEditor';
 import FlashCardContentEditor from '../FlashCardContentEditor/FlashCardContentEditor';
+import FlashCardEditorCSS from './FlashCardEdtiorCSS.module.css';
 
 type FlashCardEditorProps = {
   flashcardID: string | undefined;
@@ -31,8 +32,14 @@ function FlashCardEditor({ flashcardID = undefined }: FlashCardEditorProps) {
     isLoading ? <Loader />
       : (
         <FlashCardContextProvider propEditorState={fetchedState}>
-          <FlashCardContentEditor id={contentEditorId} />
-          <AnswerEditor prompt="Type your answer" />
+          <div className={FlashCardEditorCSS.container}>
+            <div className={FlashCardEditorCSS.content}>
+              <FlashCardContentEditor id={contentEditorId} />
+            </div>
+            <div className={FlashCardEditorCSS.answer}>
+              <AnswerEditor prompt="Type your answer" />
+            </div>
+          </div>
         </FlashCardContextProvider>
       )
   );

@@ -38,7 +38,7 @@ function FlashCardContentEditor({ id }:FlashCardContentEditorProps) {
   }
 
   return (
-    <div style={{ backgroundColor: 'gray', height: '400px' }}>
+    <div style={{ backgroundColor: 'gray', height: '400px', width: '100%' }}>
       <LexicalComposer initialConfig={initialConfig}>
         <PlainTextPlugin
           contentEditable={<ContentEditable />}

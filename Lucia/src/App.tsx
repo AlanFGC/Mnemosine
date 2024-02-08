@@ -1,10 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import EditPage from './pages/EditPage/EditPage';
+import Navbar from './components/NavBar/NavBar';
+import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Welcome to Mnesomine</h1>
+    <div className="app-container">
+      <Navbar />
       <BrowserRouter>
         <Routes>
           <Route path="/editor/" element={<EditPage />} />

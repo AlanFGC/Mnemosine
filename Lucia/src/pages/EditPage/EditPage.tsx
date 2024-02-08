@@ -5,15 +5,15 @@ export default function EditPage() {
   const { id } = useParams();
   if (id) {
     return (
-      <div className="App">
+      <div>
         <FlashCardEditor flashcardID={id} />
       </div>
     );
   }
 
   return (
-    <div className="App">
-      <FlashCardEditor flashcardID={null} />
+    <div>
+      <FlashCardEditor flashcardID={undefined} />
     </div>
   );
 }
